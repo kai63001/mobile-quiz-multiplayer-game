@@ -18,6 +18,10 @@ io.on('connection', (socket) => {
   socket.emit("listRooms", data);
 });
 
+io.on("join", (socket) => {
+  console.log("joined");
+})
+
 
 server.listen(3000, () => {
   console.log('listening on *:3000');
