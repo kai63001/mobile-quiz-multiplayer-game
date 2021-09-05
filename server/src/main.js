@@ -6,15 +6,16 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-  });
+  res.sendFile(__dirname + '/index.html');
+});
+
 
 io.on('connection', (socket) => {
+  // console.log(socket.id);
   console.log('a user connected');
-  socket.on('chat', (msg) => {
-    console.log('message: ' + msg);
-  });
+  console.log(io.sockets.adapter.rooms)
 });
+
 
 server.listen(3000, () => {
   console.log('listening on *:3000');
