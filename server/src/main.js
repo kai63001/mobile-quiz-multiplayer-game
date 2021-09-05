@@ -14,6 +14,8 @@ io.on('connection', (socket) => {
   // console.log(socket.id);
   console.log('a user connected');
   console.log(io.sockets.adapter.rooms)
+  const data = Array.from(io.sockets.adapter.rooms.keys());
+  socket.emit("listRooms", data);
 });
 
 
