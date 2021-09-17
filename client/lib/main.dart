@@ -1,9 +1,17 @@
 import 'package:client/reload/reload.dart';
+import 'package:client/screens/lobby.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.red,
+    statusBarIconBrightness: Brightness.dark,
+  ));
   runApp(MyApp());
 }
 
@@ -14,7 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'SKYCAP',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primaryColor: Colors.red,
       ),
       home: MyHomePage(),
     );
@@ -29,16 +37,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-    IO.Socket socket = IO.io('http://10.94.0.51:3000', <String, dynamic>{
-      'transports': ['websocket'],
-      'forceNew': true
-    });
+  IO.Socket socket = IO.io('http://192.168.30.241:3000', <String, dynamic>{
+    'transports': ['websocket'],
+    'forceNew': true
+  });
+
+  final username = TextEditingController();
   @override
   void initState() {
     super.initState();
     start();
   }
-  
+
   void start() {
     print("run start");
 
@@ -57,30 +67,110 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void startGame() {
+    print(username.text);
+    if (username.text.length <= 0) {
+      final snackBar = SnackBar(
+        content: Text(
+          'Please enter username',
+          style: GoogleFonts.fredokaOne(
+            textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
+          ),
+        ),
+        action: SnackBarAction(
+          label: 'Close',
+          onPressed: () {
+            // Some code to undo the change.
+          },
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      return null;
+    }
+    socket.emit("send-username",username.text);
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+          builder: (context) => Lobby(
+                socket: socket,
+              )),
+    );
+  }
 
   @override
   void dispose() {
+    username.dispose();
     super.dispose();
-    print("test");
-    socket.disconnect();
   }
-
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return ReassembleListener(
-      onReassemble: () {  
-      },
+      onReassemble: () {},
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("SKYCAP"),
-        ),
+        backgroundColor: Theme.of(context).primaryColor,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                'You have pushed the button this many times:',
+                'Enter your name:',
+                style: GoogleFonts.fredokaOne(
+                  textStyle: TextStyle(
+                      color: Colors.white, fontSize: 25, letterSpacing: .5),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                width: size.width * 0.8,
+                child: TextField(
+                  controller: username,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.fredokaOne(
+                    textStyle: TextStyle(
+                        color: Colors.black, fontSize: 15, letterSpacing: .5),
+                  ),
+                  decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.redAccent),
+                        // borderRadius: BorderRadius.circular(25.7),
+                      ),
+                      hintText: 'Username..'),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              GestureDetector(
+                onTap: () {
+                  startGame();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      'START GAME',
+                      style: GoogleFonts.fredokaOne(
+                        textStyle: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 15,
+                            letterSpacing: .5),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
