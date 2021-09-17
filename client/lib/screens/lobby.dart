@@ -40,8 +40,7 @@ class _LobbyState extends State<Lobby> {
                   context,
                   CupertinoPageRoute(
                       builder: (context) => CreateLobby(
-                            socket: widget.socket,
-                          )),
+                          socket: widget.socket, username: widget.username)),
                 );
               },
               child: Container(
