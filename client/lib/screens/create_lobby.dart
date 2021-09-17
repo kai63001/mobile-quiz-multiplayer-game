@@ -46,6 +46,10 @@ class _CreateLobbyState extends State<CreateLobby> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+      ),
       backgroundColor: Theme.of(context).primaryColor,
       body: SafeArea(
         child: Column(
