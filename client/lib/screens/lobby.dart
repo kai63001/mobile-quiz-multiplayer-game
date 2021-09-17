@@ -1,3 +1,5 @@
+import 'package:client/screens/create_lobby.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -32,19 +34,30 @@ class _LobbyState extends State<Lobby> {
             SizedBox(
               height: 40,
             ),
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(5))),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(
-                  'CREATE LOBBY',
-                  style: GoogleFonts.fredokaOne(
-                    textStyle: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 15,
-                        letterSpacing: .5),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => CreateLobby(
+                            socket: widget.socket,
+                          )),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(5))),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    'CREATE LOBBY',
+                    style: GoogleFonts.fredokaOne(
+                      textStyle: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 15,
+                          letterSpacing: .5),
+                    ),
                   ),
                 ),
               ),
@@ -54,7 +67,6 @@ class _LobbyState extends State<Lobby> {
             ),
             Container(
               decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 2),
                   borderRadius: BorderRadius.all(Radius.circular(5))),
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
