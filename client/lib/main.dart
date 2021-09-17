@@ -88,12 +88,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
       return null;
     }
-    socket.emit("send-username",username.text);
+    socket.emit("send-username", username.text);
     Navigator.push(
       context,
       CupertinoPageRoute(
           builder: (context) => Lobby(
                 socket: socket,
+                username: username.text,
               )),
     );
   }
