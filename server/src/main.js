@@ -23,8 +23,7 @@ io.on('connection', (socket) => {
   // console.log(socket.id);
   console.log('a user connected');
   console.log(io.sockets.adapter.rooms)
-  const data = Array.from(io.sockets.adapter.rooms.keys());
-  socket.emit("listRooms", data);
+  // const data = Array.from(io.sockets.adapter.rooms.keys());
 
   // save username
   socket.on('send-username', function (username) {
@@ -50,7 +49,15 @@ io.on('connection', (socket) => {
   socket.on("join", (data) => {
     socket.join(data);
     console.log(`join rooms ${data}`)
+    // console.log(getActiveRooms(io))
+    console.log(io.sockets.adapter.rooms.get(data))
+  })
+
+  socket.on("listRooms", (data) => {
+    console.log("listRooms");
     console.log(getActiveRooms(io))
+    socket.emit("listRooms", getActiveRooms(io).toString());
+    socket.to("findListRooms").emit("listRooms", getActiveRooms(io).toString());
   })
 
   socket.on("leave", (data) => {

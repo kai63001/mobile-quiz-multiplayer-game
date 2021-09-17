@@ -12,6 +12,7 @@ void main() {
     statusBarColor: Colors.red,
     statusBarIconBrightness: Brightness.dark,
   ));
+  print("main");
   runApp(MyApp());
 }
 
@@ -56,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print('connect');
     });
 
-    socket.on("listRooms", (data) => print(data));
+    // socket.on("listRooms", (data) => print(data));
 
     socket.onConnectError((data) {
       print(data);

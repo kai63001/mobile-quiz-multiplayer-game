@@ -33,12 +33,14 @@ class _CreateLobbyState extends State<CreateLobby> {
 
   void joinRooms() {
     widget.socket.emit("join", codeRoom);
+    widget.socket.emit("listRooms");
   }
 
   @override
   void dispose() {
     print("leave");
     widget.socket.emit("leave", codeRoom);
+    widget.socket.emit("listRooms");
     super.dispose();
   }
 
