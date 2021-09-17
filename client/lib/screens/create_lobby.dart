@@ -28,6 +28,18 @@ class _CreateLobbyState extends State<CreateLobby> {
       codeRoom = randomAlphaNumeric(5);
     });
     print(codeRoom);
+    joinRooms();
+  }
+
+  void joinRooms() {
+    widget.socket.emit("join", codeRoom);
+  }
+
+  @override
+  void dispose() {
+    print("leave");
+    widget.socket.emit("leave", codeRoom);
+    super.dispose();
   }
 
   @override

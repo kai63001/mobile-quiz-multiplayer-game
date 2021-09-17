@@ -12,6 +12,12 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
+function getActiveRooms(io) {
+  const arr = Array.from(io.sockets.adapter.rooms);
+  const filtered = arr.filter(room => !room[1].has(room[0]))
+  const res = filtered.map(i => i[0]);
+  return res;
+}
 
 io.on('connection', (socket) => {
   // console.log(socket.id);
@@ -20,6 +26,7 @@ io.on('connection', (socket) => {
   const data = Array.from(io.sockets.adapter.rooms.keys());
   socket.emit("listRooms", data);
 
+  // save username
   socket.on('send-username', function (username) {
     socket.username = username;
     let id = socket.id;
@@ -34,15 +41,24 @@ io.on('connection', (socket) => {
     console.log(users)
   });
 
+  // get username
   socket.on('get-username', function (nickname) {
     console.log(users[socket.id]?.username);
   });
 
-  socket.on("join", (socket) => {
-    console.log(socket);
+  // join room
+  socket.on("join", (data) => {
+    socket.join(data);
+    console.log(`join rooms ${data}`)
+    console.log(getActiveRooms(io))
+  })
+
+  socket.on("leave", (data) => {
+    socket.leave(data);
   })
 
 });
+
 
 
 server.listen(3000, () => {
