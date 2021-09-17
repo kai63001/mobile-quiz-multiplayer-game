@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('get-username', function (nickname) {
-    console.log(users);
+    console.log(users[socket.id]?.username);
   });
 
   socket.on("join", (socket) => {
