@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:client/screens/join_lobby.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -65,6 +67,13 @@ class _ListLobbyState extends State<ListLobby> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
+        title: Text(
+          "List Rooms",
+          style: GoogleFonts.fredokaOne(
+            textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
+          ),
+        ),
+        centerTitle: true,
       ),
       body: Container(
         child: StreamBuilder(
@@ -79,20 +88,31 @@ class _ListLobbyState extends State<ListLobby> {
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
                       if (snapshot.data[index].toString() != "findListRooms") {
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 15.0),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(5)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Text(
-                              "Room : ${snapshot.data[index]}",
-                              style: GoogleFonts.fredokaOne(
-                                textStyle: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 15,
-                                    letterSpacing: .5),
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => JoinLobby(
+                                      socket: widget.socket,
+                                      code: snapshot.data[index].toString())),
+                            );
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 15.0),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Room : ${snapshot.data[index]}",
+                                style: GoogleFonts.fredokaOne(
+                                  textStyle: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 15,
+                                      letterSpacing: .5),
+                                ),
                               ),
                             ),
                           ),
@@ -106,7 +126,6 @@ class _ListLobbyState extends State<ListLobby> {
               );
             } else {
               return Container(
-               
                 child: Center(
                   child: Text(
                     "No Rooms found.",
