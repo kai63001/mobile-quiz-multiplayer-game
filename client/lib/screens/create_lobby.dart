@@ -38,7 +38,6 @@ class _CreateLobbyState extends State<CreateLobby> {
 
   @override
   void dispose() {
-    print("leave");
     widget.socket.emit("leave", codeRoom);
     widget.socket.emit("listRooms");
     super.dispose();
