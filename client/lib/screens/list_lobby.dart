@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-// STEP1:  Stream setup
 class StreamSocket {
   final _socketResponse = StreamController();
 
