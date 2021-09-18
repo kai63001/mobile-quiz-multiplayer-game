@@ -1,15 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 // STEP1:  Stream setup
 class StreamSocket {
-  final _socketResponse = StreamController<String>();
+  final _socketResponse = StreamController();
 
-  void Function(String) get addResponse => _socketResponse.sink.add;
+  void Function(List<dynamic>) get addResponse => _socketResponse.sink.add;
 
-  Stream<String> get getResponse => _socketResponse.stream;
+  Stream get getResponse => _socketResponse.stream;
 
   void dispose() {
     print("close _socketResponse");
@@ -70,13 +71,51 @@ class _ListLobbyState extends State<ListLobby> {
           stream: streamSocket.getResponse,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             print(snapshot.data);
-            if (snapshot.hasData) {
-              return Container(
-                child: Text(snapshot.data.toString()),
+            if (snapshot.hasData && snapshot.data.length > 1) {
+              return Center(
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      if (snapshot.data[index].toString() != "findListRooms") {
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 15.0),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              "Room : ${snapshot.data[index]}",
+                              style: GoogleFonts.fredokaOne(
+                                textStyle: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 15,
+                                    letterSpacing: .5),
+                              ),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+                    },
+                  ),
+                ),
               );
             } else {
               return Container(
-                child: Text("snapshot.data.toString()"),
+               
+                child: Center(
+                  child: Text(
+                    "No Rooms found.",
+                    style: GoogleFonts.fredokaOne(
+                      textStyle: TextStyle(
+                          color: Colors.white, fontSize: 25, letterSpacing: .5),
+                    ),
+                  ),
+                ),
               );
             }
           },

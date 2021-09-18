@@ -56,8 +56,8 @@ io.on('connection', (socket) => {
   socket.on("listRooms", (data) => {
     console.log("listRooms");
     console.log(getActiveRooms(io))
-    socket.emit("listRooms", getActiveRooms(io).toString());
-    socket.to("findListRooms").emit("listRooms", getActiveRooms(io).toString());
+    socket.emit("listRooms", getActiveRooms(io));
+    socket.to("findListRooms").emit("listRooms", getActiveRooms(io));
   })
 
   socket.on("leave", (data) => {
