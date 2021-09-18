@@ -1,7 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:random_string/random_string.dart';
+
+class StreamSocket {
+  final _socketResponse = StreamController();
+
+  void Function(List<dynamic>) get addResponse => _socketResponse.sink.add;
+
+  Stream get getResponse => _socketResponse.stream;
+
+  void dispose() {
+    print("close _socketResponse");
+    _socketResponse.close();
+  }
+}
 
 class CreateLobby extends StatefulWidget {
   const CreateLobby({Key? key, required this.socket, required this.username})
