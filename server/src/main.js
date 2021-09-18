@@ -19,6 +19,17 @@ function getActiveRooms(io) {
   return res;
 }
 
+function getUsernameFormId(io,roomid) {
+  console.log("roomid")
+  console.log(roomid)
+  const arr = Array.from(io.sockets.adapter.rooms.get(roomid) ?? {});
+  const username = arr.map((data,i)=>users[data])
+  console.log("username")
+  console.log(arr)
+  return username
+
+}
+
 io.on('connection', (socket) => {
   // console.log(socket.id);
   console.log('a user connected');
@@ -50,21 +61,25 @@ io.on('connection', (socket) => {
     socket.join(data);
     console.log(`join rooms ${data}`)
     // console.log(getActiveRooms(io))
-    console.log(io.sockets.adapter.rooms.get(data))
-    socket.emit("join", Array.from(io.sockets.adapter.rooms.get(data)));
-    socket.to(data).emit("join", Array.from(io.sockets.adapter.rooms.get(data)));
+    if (data != "findListRooms"){
+      console.log(getUsernameFormId(io,data))
+      socket.emit("join", getUsernameFormId(io,data));
+      socket.to(data).emit("join", getUsernameFormId(io,data));
+    }
 
   })
 
   socket.on("listRooms", (data) => {
     console.log("listRooms");
-    console.log(getActiveRooms(io))
     socket.emit("listRooms", getActiveRooms(io));
     socket.to("findListRooms").emit("listRooms", getActiveRooms(io));
   })
 
   socket.on("leave", (data) => {
     socket.leave(data);
+    if(data != "findListRooms"){
+      socket.to(data).emit("join", getUsernameFormId(io,data));
+    }
   })
 
 });
