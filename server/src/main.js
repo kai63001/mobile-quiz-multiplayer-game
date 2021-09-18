@@ -51,6 +51,9 @@ io.on('connection', (socket) => {
     console.log(`join rooms ${data}`)
     // console.log(getActiveRooms(io))
     console.log(io.sockets.adapter.rooms.get(data))
+    socket.emit("join", Array.from(io.sockets.adapter.rooms.get(data)));
+    socket.to(data).emit("join", Array.from(io.sockets.adapter.rooms.get(data)));
+
   })
 
   socket.on("listRooms", (data) => {

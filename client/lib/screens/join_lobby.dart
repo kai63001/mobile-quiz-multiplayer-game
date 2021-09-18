@@ -14,6 +14,29 @@ class JoinLobby extends StatefulWidget {
 
 class _JoinLobbyState extends State<JoinLobby> {
   @override
+  void initState() {
+    joinRoom();
+    super.initState();
+  }
+
+  void joinRoom() {
+    print("join room");
+    widget.socket.emit("join", widget.code);
+    widget.socket.on("join", (data) {
+      print("join data");
+      print(data);
+    });
+  }
+
+  @override
+  void dispose() {
+    print("leave");
+    widget.socket.emit("leave", widget.code);
+    widget.socket.emit("listRooms");
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
