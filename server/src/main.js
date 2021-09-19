@@ -5,6 +5,13 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
+//redis
+const redis = require('redis')
+const redisClient = redis.createClient()
+const { promisify } = require('es6-promisify')
+const asyncGet = promisify(redisClient.get).bind(redisClient)
+
+
 
 let users = {};
 
@@ -19,14 +26,15 @@ function getActiveRooms(io) {
   return res;
 }
 
-function getUsernameFormId(io,roomid) {
-  console.log("roomid")
-  console.log(roomid)
+async function getUsernameFormId(io, roomid) {
+
   const arr = Array.from(io.sockets.adapter.rooms.get(roomid) ?? {});
-  const username = arr.map((data,i)=>users[data])
-  console.log("username")
-  console.log(arr)
-  return username
+  const username = arr.map(async (data, i) => {
+    return await asyncGet(data.toString());
+  })
+  const userdata = await Promise.all(username)
+  console.log(userdata)
+  return Promise.all(username)
 
 }
 
@@ -40,15 +48,9 @@ io.on('connection', (socket) => {
   socket.on('send-username', function (username) {
     socket.username = username;
     let id = socket.id;
-    let data = {}
-    data[id] = {
-      username
-    }
-    users = {
-      ...users,
-      ...data
-    }
-    console.log(users)
+
+    redisClient.set(id, JSON.stringify({ username }))
+
   });
 
   // get username
@@ -61,10 +63,12 @@ io.on('connection', (socket) => {
     socket.join(data);
     console.log(`join rooms ${data}`)
     // console.log(getActiveRooms(io))
-    if (data != "findListRooms"){
-      console.log(getUsernameFormId(io,data))
-      socket.emit("join", getUsernameFormId(io,data));
-      socket.to(data).emit("join", getUsernameFormId(io,data));
+    if (data != "findListRooms") {
+      console.log(getUsernameFormId(io, data))
+      getUsernameFormId(io, data).then(data => {
+        socket.emit("join", data);
+        socket.to(data).emit("join", data);
+      })
     }
 
   })
@@ -77,8 +81,8 @@ io.on('connection', (socket) => {
 
   socket.on("leave", (data) => {
     socket.leave(data);
-    if(data != "findListRooms"){
-      socket.to(data).emit("join", getUsernameFormId(io,data));
+    if (data != "findListRooms") {
+      socket.to(data).emit("join", getUsernameFormId(io, data));
     }
   })
 

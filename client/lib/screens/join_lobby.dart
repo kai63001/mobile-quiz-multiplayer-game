@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:random_string/random_string.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class StreamSocket {
@@ -29,17 +31,26 @@ class JoinLobby extends StatefulWidget {
 
 class _JoinLobbyState extends State<JoinLobby> {
   StreamSocket streamSocket = StreamSocket();
-
+  late String codeRoom = widget.code.length < 1 ? '' : widget.code;
   @override
   void initState() {
+    randomCode();
     joinRoom();
     super.initState();
   }
 
+  void randomCode() {
+    setState(() {
+      codeRoom = randomAlphaNumeric(5);
+    });
+  }
+
   void joinRoom() {
     print("join room");
-    widget.socket.emit("join", widget.code);
+    widget.socket.emit("join", codeRoom);
     widget.socket.on("join", (data) {
+      print("join");
+      print(data);
       streamSocket.addResponse(data);
     });
   }
@@ -47,7 +58,7 @@ class _JoinLobbyState extends State<JoinLobby> {
   @override
   void dispose() {
     print("leave");
-    widget.socket.emit("leave", widget.code);
+    widget.socket.emit("leave", codeRoom);
     widget.socket.emit("listRooms");
     super.dispose();
   }
@@ -62,7 +73,7 @@ class _JoinLobbyState extends State<JoinLobby> {
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
         title: Text(
-          "Room : ${widget.code}",
+          "Room : ${codeRoom}",
           style: GoogleFonts.fredokaOne(
             textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
           ),
@@ -99,9 +110,10 @@ class _JoinLobbyState extends State<JoinLobby> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, index) {
-                          Map<String, dynamic> data = snapshot.data[index];
+                          print(snapshot.data);
+                          Map<String, dynamic> data = jsonDecode(snapshot.data[index]);
                           return Container(
-                            margin: EdgeInsets.only(bottom:5),
+                            margin: EdgeInsets.only(bottom: 5),
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius:

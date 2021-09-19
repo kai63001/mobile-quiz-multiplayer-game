@@ -1,4 +1,4 @@
-import 'package:client/screens/create_lobby.dart';
+import 'package:client/screens/join_lobby.dart';
 import 'package:client/screens/list_lobby.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,8 +44,8 @@ class _LobbyState extends State<Lobby> {
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
-                      builder: (context) => CreateLobby(
-                          socket: widget.socket, username: widget.username)),
+                      builder: (context) =>
+                          JoinLobby(socket: widget.socket, code: '')),
                 );
               },
               child: Container(
