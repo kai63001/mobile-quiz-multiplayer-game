@@ -9,7 +9,7 @@ const io = new Server(server);
 const redis = require('redis')
 const redisClient = redis.createClient()
 const { promisify } = require('es6-promisify')
-const asyncGet = promisify(redisClient.get).bind(redisClient)
+const asyncGet = promisify(redisClient.HGET).bind(redisClient)
 
 
 
@@ -30,7 +30,7 @@ async function getUsernameFormId(io, roomid) {
 
   const arr = Array.from(io.sockets.adapter.rooms.get(roomid) ?? {});
   const username = arr.map(async (data, i) => {
-    return await asyncGet(data.toString());
+    return {"username": await asyncGet(data.toString(),"username")};
   })
   const userdata = await Promise.all(username)
   console.log(userdata)
@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
     socket.username = username;
     let id = socket.id;
 
-    redisClient.set(id, JSON.stringify({ username }))
+    redisClient.hset(id, "username",username)
 
   });
 

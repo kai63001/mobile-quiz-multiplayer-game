@@ -111,7 +111,7 @@ class _JoinLobbyState extends State<JoinLobby> {
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, index) {
                           print(snapshot.data);
-                          Map<String, dynamic> data = jsonDecode(snapshot.data[index]);
+                          Map<String, dynamic> data = (snapshot.data[index]);
                           return Container(
                             margin: EdgeInsets.only(bottom: 5),
                             decoration: BoxDecoration(
