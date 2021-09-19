@@ -31,7 +31,7 @@ class JoinLobby extends StatefulWidget {
 
 class _JoinLobbyState extends State<JoinLobby> {
   StreamSocket streamSocket = StreamSocket();
-  late String codeRoom = widget.code.length < 1 ? '' : widget.code;
+  late String codeRoom;
   @override
   void initState() {
     randomCode();
@@ -41,8 +41,13 @@ class _JoinLobbyState extends State<JoinLobby> {
 
   void randomCode() {
     setState(() {
-      codeRoom = randomAlphaNumeric(5);
+      codeRoom = widget.code;
     });
+    if (codeRoom.length < 1) {
+      setState(() {
+        codeRoom = randomAlphaNumeric(5);
+      });
+    }
   }
 
   void joinRoom() {

@@ -65,9 +65,9 @@ io.on('connection', (socket) => {
     // console.log(getActiveRooms(io))
     if (data != "findListRooms") {
       console.log(getUsernameFormId(io, data))
-      getUsernameFormId(io, data).then(data => {
-        socket.emit("join", data);
-        socket.to(data).emit("join", data);
+      getUsernameFormId(io, data).then(res => {
+        socket.emit("join", res);
+        socket.to(data).emit("join", res);
       })
     }
 
@@ -82,7 +82,10 @@ io.on('connection', (socket) => {
   socket.on("leave", (data) => {
     socket.leave(data);
     if (data != "findListRooms") {
-      socket.to(data).emit("join", getUsernameFormId(io, data));
+      getUsernameFormId(io, data).then(res => {
+        socket.to(data).emit("join", res);
+      })
+      // socket.to(data).emit("join", getUsernameFormId(io, data));
     }
   })
 
