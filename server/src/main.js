@@ -62,7 +62,6 @@ io.on('connection', (socket) => {
   socket.on("join", (data) => {
     socket.join(data);
     console.log(`join rooms ${data}`)
-    // console.log(getActiveRooms(io))
     if (data != "findListRooms") {
       console.log(getUsernameFormId(io, data))
       getUsernameFormId(io, data).then(res => {
@@ -85,7 +84,6 @@ io.on('connection', (socket) => {
       getUsernameFormId(io, data).then(res => {
         socket.to(data).emit("join", res);
       })
-      // socket.to(data).emit("join", getUsernameFormId(io, data));
     }
   })
 
