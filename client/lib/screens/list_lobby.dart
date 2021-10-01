@@ -20,9 +20,11 @@ class StreamSocket {
 }
 
 class ListLobby extends StatefulWidget {
-  const ListLobby({Key? key, required this.socket}) : super(key: key);
+  const ListLobby({Key? key, required this.socket, required this.username})
+      : super(key: key);
 
   final IO.Socket socket;
+  final String username;
 
   @override
   _ListLobbyState createState() => _ListLobbyState();
@@ -93,6 +95,7 @@ class _ListLobbyState extends State<ListLobby> {
                               context,
                               CupertinoPageRoute(
                                   builder: (context) => JoinLobby(
+                                      username: widget.username,
                                       socket: widget.socket,
                                       code: snapshot.data[index].toString())),
                             );

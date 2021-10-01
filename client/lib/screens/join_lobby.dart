@@ -20,11 +20,12 @@ class StreamSocket {
 }
 
 class JoinLobby extends StatefulWidget {
-  const JoinLobby({Key? key, required this.code, required this.socket})
+  const JoinLobby({Key? key, required this.code, required this.socket ,required this.username})
       : super(key: key);
 
   final IO.Socket socket;
   final String code;
+  final String username;
   @override
   _JoinLobbyState createState() => _JoinLobbyState();
 }
@@ -125,14 +126,32 @@ class _JoinLobbyState extends State<JoinLobby> {
                                     BorderRadius.all(Radius.circular(5))),
                             child: Padding(
                               padding: const EdgeInsets.all(15.0),
-                              child: Text(
-                                '${data["username"]}',
-                                style: GoogleFonts.fredokaOne(
-                                  textStyle: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 20,
-                                      letterSpacing: .5),
-                                ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${data["username"]}',
+                                    style: GoogleFonts.fredokaOne(
+                                      textStyle: TextStyle(
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize: 20,
+                                          letterSpacing: .5),
+                                    ),
+                                  ),
+                                  data["host"]
+                                      ? Text(
+                                          'KINK',
+                                          style: GoogleFonts.fredokaOne(
+                                            textStyle: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                fontSize: 20,
+                                                letterSpacing: .5),
+                                          ),
+                                        )
+                                      : Text(""),
+                                ],
                               ),
                             ),
                           );

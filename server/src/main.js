@@ -27,7 +27,10 @@ function getActiveRooms(io) {
 async function getUsernameFormId(io, roomid) {
   const arr = Array.from(io.sockets.adapter.rooms.get(roomid) ?? {});
   const username = arr.map(async (data, i) => {
-    return { username: await asyncGet(data.toString(), "username") };
+    return {
+      username: await asyncGet(data.toString(), "username"),
+      host: false,
+    };
   });
   const userdata = await Promise.all(username);
   console.log(userdata);
@@ -60,9 +63,7 @@ io.on("connection", (socket) => {
     if (data != "findListRooms") {
       console.log(getUsernameFormId(io, data));
       getUsernameFormId(io, data).then((res) => {
-        if (res.length == 1) {
-          res[0].host = true;
-        }
+        res[0].host = true;
         socket.emit("join", res);
         socket.to(data).emit("join", res);
       });
@@ -79,6 +80,7 @@ io.on("connection", (socket) => {
     socket.leave(data);
     if (data != "findListRooms") {
       getUsernameFormId(io, data).then((res) => {
+        res[0].host = true;
         socket.to(data).emit("join", res);
       });
     }

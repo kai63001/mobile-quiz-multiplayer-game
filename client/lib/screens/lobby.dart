@@ -45,7 +45,7 @@ class _LobbyState extends State<Lobby> {
                   context,
                   CupertinoPageRoute(
                       builder: (context) =>
-                          JoinLobby(socket: widget.socket, code: '')),
+                          JoinLobby(socket: widget.socket, code: '',username: widget.username,)),
                 );
               },
               child: Container(
@@ -74,7 +74,7 @@ class _LobbyState extends State<Lobby> {
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
-                      builder: (context) => ListLobby(socket: widget.socket)),
+                      builder: (context) => ListLobby(socket: widget.socket,username: widget.username,)),
                 );
               },
               child: Container(
