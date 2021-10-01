@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:random_string/random_string.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -131,7 +132,7 @@ class _JoinLobbyState extends State<JoinLobby> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '${data["username"]}',
+                                    '${data["username"]} ${data["username"] == widget.username ? '(you)':''}',
                                     style: GoogleFonts.fredokaOne(
                                       textStyle: TextStyle(
                                           color: Theme.of(context).primaryColor,
@@ -140,16 +141,7 @@ class _JoinLobbyState extends State<JoinLobby> {
                                     ),
                                   ),
                                   data["host"]
-                                      ? Text(
-                                          'KINK',
-                                          style: GoogleFonts.fredokaOne(
-                                            textStyle: TextStyle(
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                                fontSize: 20,
-                                                letterSpacing: .5),
-                                          ),
-                                        )
+                                      ? Icon(FontAwesomeIcons.chessKing)
                                       : Text(""),
                                 ],
                               ),
