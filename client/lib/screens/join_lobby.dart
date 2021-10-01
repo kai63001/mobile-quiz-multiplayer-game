@@ -74,6 +74,14 @@ class _JoinLobbyState extends State<JoinLobby> {
     super.dispose();
   }
 
+  void startGame(data) {
+    if(data.length <= 1){
+      print("start ha pong");
+      return null;
+    }
+    print("start game");
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -158,27 +166,32 @@ class _JoinLobbyState extends State<JoinLobby> {
                   ),
                   snapshot.data[0]["username"] == widget.username &&
                           snapshot.data[0]["host"] == true
-                      ? Container(
-                          width: size.width * 0.8,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5))),
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Center(
-                              child: Text(
-                                'START GAME',
-                                style: GoogleFonts.fredokaOne(
-                                  textStyle: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 20,
-                                      letterSpacing: .5),
+                      ? GestureDetector(
+                        onTap: (){
+                          startGame(snapshot.data);
+                        },
+                        child: Container(
+                            width: size.width * 0.8,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Center(
+                                child: Text(
+                                  'START GAME',
+                                  style: GoogleFonts.fredokaOne(
+                                    textStyle: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 20,
+                                        letterSpacing: .5),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        )
+                      )
                       : Text("")
                 ],
               );
