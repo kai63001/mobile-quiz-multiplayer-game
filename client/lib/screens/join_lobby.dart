@@ -21,7 +21,11 @@ class StreamSocket {
 }
 
 class JoinLobby extends StatefulWidget {
-  const JoinLobby({Key? key, required this.code, required this.socket ,required this.username})
+  const JoinLobby(
+      {Key? key,
+      required this.code,
+      required this.socket,
+      required this.username})
       : super(key: key);
 
   final IO.Socket socket;
@@ -132,7 +136,7 @@ class _JoinLobbyState extends State<JoinLobby> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '${data["username"]} ${data["username"] == widget.username ? '(you)':''}',
+                                    '${data["username"]} ${data["username"] == widget.username ? '(you)' : ''}',
                                     style: GoogleFonts.fredokaOne(
                                       textStyle: TextStyle(
                                           color: Theme.of(context).primaryColor,
@@ -149,6 +153,33 @@ class _JoinLobbyState extends State<JoinLobby> {
                           );
                         }),
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  snapshot.data[0]["username"] == widget.username &&
+                          snapshot.data[0]["host"] == true
+                      ? Container(
+                          width: size.width * 0.8,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Center(
+                              child: Text(
+                                'START GAME',
+                                style: GoogleFonts.fredokaOne(
+                                  textStyle: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 20,
+                                      letterSpacing: .5),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Text("")
                 ],
               );
             } else {
