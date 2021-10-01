@@ -38,7 +38,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  IO.Socket socket = IO.io('http://192.168.134.135:3000', <String, dynamic>{
+  IO.Socket socket = IO.io('http://192.168.30.161:3000', <String, dynamic>{
     'transports': ['websocket'],
     'forceNew': true
   });
