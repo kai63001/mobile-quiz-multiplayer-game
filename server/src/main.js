@@ -70,8 +70,11 @@ io.on("connection", (socket) => {
     }
   });
 
+  // start game
   socket.on("startGame", (data) => {
-
+    console.log("startGame")
+    socket.emit("startGame", "gogogo");
+    socket.to(data).emit("startGame", "gogogo");
   });
 
   socket.on("listRooms", (data) => {

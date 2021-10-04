@@ -42,6 +42,7 @@ class _JoinLobbyState extends State<JoinLobby> {
   void initState() {
     randomCode();
     joinRoom();
+    checkStartGame();
     super.initState();
   }
 
@@ -95,6 +96,13 @@ class _JoinLobbyState extends State<JoinLobby> {
       return null;
     }
     print("start game");
+    widget.socket.emit("startGame", codeRoom);
+  }
+
+  void checkStartGame() {
+    widget.socket.on("startGame", (data) {
+      print("Change Screen to game");
+    });
   }
 
   @override
