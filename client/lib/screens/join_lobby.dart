@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
+import 'package:client/screens/game.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,12 +39,13 @@ class JoinLobby extends StatefulWidget {
 class _JoinLobbyState extends State<JoinLobby> {
   StreamSocket streamSocket = StreamSocket();
   late String codeRoom;
+  bool startgame = false;
   @override
   void initState() {
+    super.initState();
     randomCode();
     joinRoom();
     checkStartGame();
-    super.initState();
   }
 
   void randomCode() {
@@ -68,16 +70,8 @@ class _JoinLobbyState extends State<JoinLobby> {
     });
   }
 
-  @override
-  void dispose() {
-    print("leave");
-    widget.socket.emit("leave", codeRoom);
-    widget.socket.emit("listRooms");
-    super.dispose();
-  }
-
   void startGame(data) {
-    if(data.length <= 1){
+    if (data.length <= 1) {
       final snackBar = SnackBar(
         content: Text(
           'More than 1 player is required.',
@@ -97,12 +91,40 @@ class _JoinLobbyState extends State<JoinLobby> {
     }
     print("start game");
     widget.socket.emit("startGame", codeRoom);
+    Navigator.pushAndRemoveUntil(
+      context,
+      CupertinoPageRoute(
+          builder: (context) => Game(
+                code: widget.code,
+                socket: widget.socket,
+                username: widget.username,
+              )),
+      (Route<dynamic> route) => false,
+    );
   }
 
   void checkStartGame() {
     widget.socket.on("startGame", (data) {
       print("Change Screen to game");
+      Navigator.pushAndRemoveUntil(
+        context,
+        CupertinoPageRoute(
+            builder: (context) => Game(
+                  code: widget.code,
+                  socket: widget.socket,
+                  username: widget.username,
+                )),
+        (Route<dynamic> route) => false,
+      );
     });
+  }
+
+  @override
+  void dispose() {
+    print("leave");
+    widget.socket.emit("leave", codeRoom);
+    widget.socket.emit("listRooms");
+    super.dispose();
   }
 
   @override
@@ -190,10 +212,10 @@ class _JoinLobbyState extends State<JoinLobby> {
                   snapshot.data[0]["username"] == widget.username &&
                           snapshot.data[0]["host"] == true
                       ? GestureDetector(
-                        onTap: (){
-                          startGame(snapshot.data);
-                        },
-                        child: Container(
+                          onTap: () {
+                            startGame(snapshot.data);
+                          },
+                          child: Container(
                             width: size.width * 0.8,
                             decoration: BoxDecoration(
                                 color: Colors.white,
@@ -214,7 +236,7 @@ class _JoinLobbyState extends State<JoinLobby> {
                               ),
                             ),
                           ),
-                      )
+                        )
                       : Text("")
                 ],
               );

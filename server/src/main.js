@@ -63,18 +63,25 @@ io.on("connection", (socket) => {
     if (data != "findListRooms") {
       console.log(getUsernameFormId(io, data));
       getUsernameFormId(io, data).then((res) => {
-        res[0].host = true;
-        socket.emit("join", res);
-        socket.to(data).emit("join", res);
+        try {
+          res[0].host = true;
+          socket.emit("join", res);
+          socket.to(data).emit("join", res);
+        } catch (error) {
+          console.log(error);
+        }
       });
     }
   });
 
   // start game
   socket.on("startGame", (data) => {
-    console.log("startGame")
-    socket.emit("startGame", "gogogo");
+    console.log("startGame");
     socket.to(data).emit("startGame", "gogogo");
+  });
+
+  socket.on("leaveGame", (data) => {
+    socket.leave(data);
   });
 
   socket.on("listRooms", (data) => {
@@ -87,8 +94,12 @@ io.on("connection", (socket) => {
     socket.leave(data);
     if (data != "findListRooms") {
       getUsernameFormId(io, data).then((res) => {
-        res[0].host = true;
-        socket.to(data).emit("join", res);
+        try {
+          res[0].host = true;
+          socket.to(data).emit("join", res);
+        } catch (error) {
+          console.log(error);
+        }
       });
     }
   });

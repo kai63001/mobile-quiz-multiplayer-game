@@ -56,7 +56,6 @@ class _ListLobbyState extends State<ListLobby> {
   @override
   void dispose() {
     // rooms.clear();
-    // streamSocket.dispose();
     widget.socket.emit("leave", "findListRooms");
     super.dispose();
   }
