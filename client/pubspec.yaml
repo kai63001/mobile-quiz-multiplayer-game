@@ -32,6 +32,7 @@ dependencies:
   google_fonts: ^2.1.0
   random_string: ^2.3.1
   font_awesome_flutter: ^9.1.0
+  flame: ^0.29.4
 
 dev_dependencies:
   flutter_test:

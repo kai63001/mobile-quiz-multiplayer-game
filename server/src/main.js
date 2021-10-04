@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
       console.log(getUsernameFormId(io, data));
       getUsernameFormId(io, data).then((res) => {
         try {
-          res[0].host = true;
+          res.length != 0 ? res[0].host = true:null;
           socket.emit("join", res);
           socket.to(data).emit("join", res);
         } catch (error) {
@@ -95,7 +95,7 @@ io.on("connection", (socket) => {
     if (data != "findListRooms") {
       getUsernameFormId(io, data).then((res) => {
         try {
-          res[0].host = true;
+          res.length != 0 ? res[0].host = true:null;
           socket.to(data).emit("join", res);
         } catch (error) {
           console.log(error);
