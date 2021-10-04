@@ -59,6 +59,7 @@ class _JoinLobbyState extends State<JoinLobby> {
   void joinRoom() {
     print("join room");
     widget.socket.emit("join", codeRoom);
+    widget.socket.emit("listRooms");
     widget.socket.on("join", (data) {
       print("join");
       print(data);
