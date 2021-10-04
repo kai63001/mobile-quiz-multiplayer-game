@@ -94,7 +94,7 @@ class _JoinLobbyState extends State<JoinLobby> {
     Navigator.pushAndRemoveUntil(
       context,
       CupertinoPageRoute(
-          builder: (context) => Game(
+          builder: (context) => MyGame(
                 code: widget.code,
                 socket: widget.socket,
                 username: widget.username,
@@ -109,7 +109,7 @@ class _JoinLobbyState extends State<JoinLobby> {
       Navigator.pushAndRemoveUntil(
         context,
         CupertinoPageRoute(
-            builder: (context) => Game(
+            builder: (context) => MyGame(
                   code: widget.code,
                   socket: widget.socket,
                   username: widget.username,

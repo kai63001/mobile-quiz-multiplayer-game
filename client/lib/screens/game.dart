@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -17,8 +16,8 @@ class StreamSocket {
   }
 }
 
-class Game extends StatefulWidget {
-  const Game(
+class MyGame extends StatefulWidget {
+  const MyGame(
       {Key? key,
       required this.code,
       required this.socket,
@@ -30,31 +29,35 @@ class Game extends StatefulWidget {
   final String username;
 
   @override
-  _GameState createState() => _GameState();
+  _MyGameState createState() => _MyGameState();
 }
 
-class _GameState extends State<Game> {
+class _MyGameState extends State<MyGame> {
   StreamSocket streamSocket = StreamSocket();
 
   late String codeRoom;
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          elevation: 0,
-          title: Text(
-            "GAME",
-            style: GoogleFonts.fredokaOne(
-              textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
-            ),
+        elevation: 0,
+        title: Text(
+          "GAME",
+          style: GoogleFonts.fredokaOne(
+            textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
           ),
-          centerTitle: true,
         ),
-        body: Text("hello"));
+        centerTitle: true,
+      ),
+      body: Text(
+        "GAME",
+        style: GoogleFonts.fredokaOne(
+          textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
+        ),
+      ),
+    );
   }
 }
