@@ -9,8 +9,8 @@ import 'package:socket_io_client/socket_io_client.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.red,
-    statusBarIconBrightness: Brightness.dark,
+    statusBarColor:Color(0xff18191a),
+    statusBarIconBrightness: Brightness.light,
   ));
   print("main");
   runApp(MyApp());
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       title: 'SKYCAP',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.red,
+        primaryColor: Color(0xff18191a),
       ),
       home: MyHomePage(),
     );
