@@ -70,6 +70,10 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("startGame", (data) => {
+    
+  });
+
   socket.on("listRooms", (data) => {
     console.log("listRooms");
     socket.emit("listRooms", getActiveRooms(io));

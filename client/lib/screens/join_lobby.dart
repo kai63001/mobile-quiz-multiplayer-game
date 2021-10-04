@@ -76,7 +76,21 @@ class _JoinLobbyState extends State<JoinLobby> {
 
   void startGame(data) {
     if(data.length <= 1){
-      print("start ha pong");
+      final snackBar = SnackBar(
+        content: Text(
+          'More than 1 player is required.',
+          style: GoogleFonts.fredokaOne(
+            textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
+          ),
+        ),
+        action: SnackBarAction(
+          label: 'Close',
+          onPressed: () {
+            // Some code to undo the change.
+          },
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return null;
     }
     print("start game");
