@@ -52,10 +52,16 @@ class _MyGameState extends State<MyGame> {
         ),
         centerTitle: true,
       ),
-      body: Text(
-        "GAME",
-        style: GoogleFonts.fredokaOne(
-          textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Text(
+              "GAME",
+              style: GoogleFonts.fredokaOne(
+                textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
+              ),
+            ),
+          ],
         ),
       ),
     );
