@@ -98,6 +98,7 @@ class _JoinLobbyState extends State<JoinLobby> {
                 code: codeRoom,
                 socket: widget.socket,
                 username: widget.username,
+                player: data,
               )),
       (Route<dynamic> route) => false,
     );
@@ -113,6 +114,7 @@ class _JoinLobbyState extends State<JoinLobby> {
                   code: codeRoom,
                   socket: widget.socket,
                   username: widget.username,
+                  player: data,
                 )),
         (Route<dynamic> route) => false,
       );

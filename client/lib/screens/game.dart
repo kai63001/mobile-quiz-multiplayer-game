@@ -21,12 +21,14 @@ class MyGame extends StatefulWidget {
       {Key? key,
       required this.code,
       required this.socket,
-      required this.username})
+      required this.username,
+      required this.player})
       : super(key: key);
 
   final IO.Socket socket;
   final String code;
   final String username;
+  final List player;
 
   @override
   _MyGameState createState() => _MyGameState();
@@ -35,16 +37,30 @@ class MyGame extends StatefulWidget {
 class _MyGameState extends State<MyGame> {
   StreamSocket streamSocket = StreamSocket();
   var list = new List<int>.generate(10, (i) => i + 1);
+  List listPlayer = [];
   List playerPosition = [];
   late String codeRoom;
 
-  void initGame() {
-    print(codeRoom);
-    print("code room :$codeRoom");
+  void initGame() async {
     widget.socket.emit("join", codeRoom);
     widget.socket.on("join", (data) {
-      print("join");
-      print(data);
+    // 
+    });
+    for (var i = 0; i < widget.player.length; i++) {
+      setState(() {
+        playerPosition = [
+          ...playerPosition,
+          {i: "romeo"}
+        ];
+      });
+    }
+  }
+
+  void reGame() {
+    print("restartGame");
+    print(playerPosition);
+    setState(() {
+      playerPosition = [];
     });
   }
 
@@ -79,6 +95,39 @@ class _MyGameState extends State<MyGame> {
             children: [
               Column(
                 children: [
+                  Center(
+                    child: Container(
+                      width: size.width * 0.8,
+                      margin: EdgeInsets.all(8),
+                      height: 130,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                initGame();
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(color: Colors.green),
+                                child: Text("new"),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                reGame();
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(color: Colors.red),
+                                child: Text("re"),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   for (var i in list)
                     Container(
                       margin: EdgeInsets.all(8),
@@ -87,16 +136,11 @@ class _MyGameState extends State<MyGame> {
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(3))),
-                      child: GestureDetector(
-                        onTap: () {
-                          widget.socket.emit("join", codeRoom);
-                        },
-                        child: Text(
-                          "START GAME",
-                          style: GoogleFonts.fredokaOne(
-                            textStyle: TextStyle(
-                                color: Colors.black, letterSpacing: .5),
-                          ),
+                      child: Text(
+                        "START GAME",
+                        style: GoogleFonts.fredokaOne(
+                          textStyle:
+                              TextStyle(color: Colors.black, letterSpacing: .5),
                         ),
                       ),
                     )

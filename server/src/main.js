@@ -77,7 +77,15 @@ io.on("connection", (socket) => {
   // start game
   socket.on("startGame", (data) => {
     console.log("startGame");
-    socket.to(data).emit("startGame", "gogogo");
+    getUsernameFormId(io, data).then((res) => {
+      try {
+        res.length != 0 ? res[0].host = true:null;
+        socket.emit("startGame", res);
+        socket.to(data).emit("startGame", res);
+      } catch (error) {
+        console.log(error);
+      }
+    });
   });
 
   socket.on("leaveGame", (data) => {
