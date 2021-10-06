@@ -95,7 +95,7 @@ class _JoinLobbyState extends State<JoinLobby> {
       context,
       CupertinoPageRoute(
           builder: (context) => MyGame(
-                code: widget.code,
+                code: codeRoom,
                 socket: widget.socket,
                 username: widget.username,
               )),
@@ -110,7 +110,7 @@ class _JoinLobbyState extends State<JoinLobby> {
         context,
         CupertinoPageRoute(
             builder: (context) => MyGame(
-                  code: widget.code,
+                  code: codeRoom,
                   socket: widget.socket,
                   username: widget.username,
                 )),

@@ -34,11 +34,32 @@ class MyGame extends StatefulWidget {
 
 class _MyGameState extends State<MyGame> {
   StreamSocket streamSocket = StreamSocket();
-
+  var list = new List<int>.generate(10, (i) => i + 1);
+  List playerPosition = [];
   late String codeRoom;
+
+  void initGame() {
+    print(codeRoom);
+    print("code room :$codeRoom");
+    widget.socket.emit("join", codeRoom);
+    widget.socket.on("join", (data) {
+      print("join");
+      print(data);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      codeRoom = "started_${widget.code}";
+    });
+    initGame();
+  }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -52,16 +73,48 @@ class _MyGameState extends State<MyGame> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Text(
-              "START GAME ",
-              style: GoogleFonts.fredokaOne(
-                textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  for (var i in list)
+                    Container(
+                      margin: EdgeInsets.all(8),
+                      height: 130,
+                      width: size.width * 0.8,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(3))),
+                      child: GestureDetector(
+                        onTap: () {
+                          widget.socket.emit("join", codeRoom);
+                        },
+                        child: Text(
+                          "START GAME",
+                          style: GoogleFonts.fredokaOne(
+                            textStyle: TextStyle(
+                                color: Colors.black, letterSpacing: .5),
+                          ),
+                        ),
+                      ),
+                    )
+                ],
               ),
-            ),
-          ],
+              AnimatedPositioned(
+                  top: 50 + (145 * 2),
+                  left: size.width * 0.5 - 55,
+                  duration: const Duration(milliseconds: 300),
+                  child: Center(
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      color: Colors.red,
+                    ),
+                  )),
+            ],
+          ),
         ),
       ),
     );
