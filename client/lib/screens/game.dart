@@ -56,7 +56,7 @@ class _MyGameState extends State<MyGame> {
         child: Column(
           children: [
             Text(
-              "GAME",
+              "START GAME ",
               style: GoogleFonts.fredokaOne(
                 textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
               ),
