@@ -94,13 +94,34 @@ class _MyGameState extends State<MyGame> {
     });
   }
 
-  void _startGame() {
+  void _startGame() async {
     setState(() {
       gameStarted = true;
     });
-    if(nowTurn == iAmAt){
+    await Future.delayed(Duration(seconds: 1));
+    if (nowTurn == iAmAt) {
       print("your turn");
+
+      Future.delayed(Duration.zero, () => showRandom(context));
     }
+  }
+
+  void showRandom(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) => Scaffold(
+          backgroundColor: Theme.of(context).primaryColor,
+          body: Center(
+            child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: GestureDetector(onTap: (){
+                    Navigator.pop(context);
+                  },child: Text("romsseo")),
+                ),
+          ),
+        ));
   }
 
   String _checkTurnStatus() {
@@ -216,7 +237,8 @@ class _MyGameState extends State<MyGame> {
                 ),
                 for (int i = 0; i < playerPosition.length; i++)
                   AnimatedPositioned(
-                      top: double.parse(playerPosition[i]["positionX"].toString()),
+                      top: double.parse(
+                          playerPosition[i]["positionX"].toString()),
                       left: playerPosition[i]["positionY"],
                       duration: const Duration(milliseconds: 300),
                       child: Center(
@@ -226,7 +248,6 @@ class _MyGameState extends State<MyGame> {
                           color: playerPosition[i]["color"],
                         ),
                       )),
-               
               ],
             ),
           ),
@@ -258,7 +279,34 @@ class _MyGameState extends State<MyGame> {
           centerTitle: true,
         ),
         body: Center(
-          child: SingleChildScrollView(child: Text("LOADING")),
+          child: SingleChildScrollView(
+              child: Center(
+                  child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    initGame();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(color: Colors.green),
+                    child: Text("new"),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    reGame();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(color: Colors.red),
+                    child: Text("re"),
+                  ),
+                ),
+              ),
+            ],
+          ))),
         ),
       );
     }
