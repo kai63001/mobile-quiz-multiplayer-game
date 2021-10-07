@@ -39,7 +39,7 @@ class _MyGameState extends State<MyGame> {
   var list = new List<int>.generate(10, (i) => i + 1);
   List listPlayer = [];
   List playerPosition = [];
-  List<Color> colorPlayerIndex = [Colors.red, Colors.green, Colors.blue];
+  List<Color> colorPlayerIndex = [Colors.pink, Colors.green, Colors.blue];
   late String codeRoom;
   late int iAmAt;
 
@@ -74,6 +74,7 @@ class _MyGameState extends State<MyGame> {
     }
     print("playerPosition : $playerPosition");
     print("iAmAt : $iAmAt");
+    this._startGame();
   }
 
   void reGame() {
@@ -83,6 +84,8 @@ class _MyGameState extends State<MyGame> {
       playerPosition = [];
     });
   }
+
+  void _startGame() {}
 
   @override
   void initState() {
@@ -107,11 +110,22 @@ class _MyGameState extends State<MyGame> {
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
         title: Text(
-          "GAME",
+          "YOUR TURN",
           style: GoogleFonts.fredokaOne(
             textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
           ),
         ),
+        actions: [
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {},
+                child: Icon(
+                  Icons.search,
+                  size: 26.0,
+                ),
+              )),
+        ],
         centerTitle: true,
       ),
       body: Center(
