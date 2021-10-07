@@ -41,7 +41,10 @@ class _MyGameState extends State<MyGame> {
   List playerPosition = [];
   List<Color> colorPlayerIndex = [Colors.pink, Colors.green, Colors.blue];
   late String codeRoom;
-  late int iAmAt;
+  late int iAmAt; //player index
+  int nowTurn = 0; //turn of player index
+
+  bool gameStarted = false;
 
   void initGame() async {
     int lengthOfPlayer = widget.player.length;
@@ -68,7 +71,12 @@ class _MyGameState extends State<MyGame> {
         positionY -= 60;
         playerPosition = [
           ...playerPosition,
-          {"positionY": positionY, "color": colorPlayerIndex[i]}
+          {
+            "username": widget.player[i]["username"],
+            "positionY": positionY,
+            "positionX": 50 + 145,
+            "color": colorPlayerIndex[i]
+          }
         ];
       });
     }
@@ -82,10 +90,29 @@ class _MyGameState extends State<MyGame> {
     print(playerPosition);
     setState(() {
       playerPosition = [];
+      gameStarted = false;
     });
   }
 
-  void _startGame() {}
+  void _startGame() {
+    setState(() {
+      gameStarted = true;
+    });
+    if(nowTurn == iAmAt){
+      print("your turn");
+    }
+  }
+
+  String _checkTurnStatus() {
+    String text = "";
+    if (nowTurn == iAmAt) {
+      text = "YOUR TURN";
+    } else {
+      text =
+          "${playerPosition[nowTurn]['username'].toString().toUpperCase()} TURN";
+    }
+    return text;
+  }
 
   @override
   void initState() {
@@ -104,103 +131,136 @@ class _MyGameState extends State<MyGame> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
+    if (gameStarted == true) {
+      return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        elevation: 0,
-        title: Text(
-          "YOUR TURN",
-          style: GoogleFonts.fredokaOne(
-            textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
+          elevation: 0,
+          title: Text(
+            "${_checkTurnStatus().toString()}",
+            style: GoogleFonts.fredokaOne(
+              textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
+            ),
           ),
-        ),
-        actions: [
-          Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {},
-                child: Icon(
-                  Icons.search,
-                  size: 26.0,
-                ),
-              )),
-        ],
-        centerTitle: true,
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  Center(
-                    child: Container(
-                      width: size.width * 0.8,
-                      margin: EdgeInsets.all(8),
-                      height: 130,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                initGame();
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(color: Colors.green),
-                                child: Text("new"),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                reGame();
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(color: Colors.red),
-                                child: Text("re"),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+          actions: [
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Icon(
+                    Icons.search,
+                    size: 26.0,
                   ),
-                  for (var i in list)
-                    Container(
-                      margin: EdgeInsets.all(8),
-                      height: 130,
-                      width: size.width * 0.8,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(3))),
-                      child: Text(
-                        "START GAME ${i}",
-                        style: GoogleFonts.fredokaOne(
-                          textStyle:
-                              TextStyle(color: Colors.black, letterSpacing: .5),
+                )),
+          ],
+          centerTitle: true,
+        ),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    Center(
+                      child: Container(
+                        width: size.width * 0.8,
+                        margin: EdgeInsets.all(8),
+                        height: 130,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  initGame();
+                                },
+                                child: Container(
+                                  decoration:
+                                      BoxDecoration(color: Colors.green),
+                                  child: Text("new"),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  reGame();
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(color: Colors.red),
+                                  child: Text("re"),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    )
-                ],
-              ),
-              for (int i = 0; i < playerPosition.length; i++)
-                AnimatedPositioned(
-                    top: 50 + (145 * 1),
-                    left: playerPosition[i]["positionY"],
-                    duration: const Duration(milliseconds: 300),
-                    child: Center(
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        color: playerPosition[i]["color"],
-                      ),
-                    ))
-            ],
+                    ),
+                    for (var i in list)
+                      Container(
+                        margin: EdgeInsets.all(8),
+                        height: 130,
+                        width: size.width * 0.8,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(3))),
+                        child: Text(
+                          "START GAME ${i}",
+                          style: GoogleFonts.fredokaOne(
+                            textStyle: TextStyle(
+                                color: Colors.black, letterSpacing: .5),
+                          ),
+                        ),
+                      )
+                  ],
+                ),
+                for (int i = 0; i < playerPosition.length; i++)
+                  AnimatedPositioned(
+                      top: double.parse(playerPosition[i]["positionX"].toString()),
+                      left: playerPosition[i]["positionY"],
+                      duration: const Duration(milliseconds: 300),
+                      child: Center(
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          color: playerPosition[i]["color"],
+                        ),
+                      )),
+               
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
+          elevation: 0,
+          title: Text(
+            "LOADING",
+            style: GoogleFonts.fredokaOne(
+              textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
+            ),
+          ),
+          actions: [
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Icon(
+                    Icons.search,
+                    size: 26.0,
+                  ),
+                )),
+          ],
+          centerTitle: true,
+        ),
+        body: Center(
+          child: SingleChildScrollView(child: Text("LOADING")),
+        ),
+      );
+    }
   }
 }

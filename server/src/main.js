@@ -98,6 +98,12 @@ io.on("connection", (socket) => {
     socket.to("findListRooms").emit("listRooms", getActiveRooms(io));
   });
 
+  // inGame
+  socket.on("turn", (data) => {
+    socket.emit("turn", 1);
+    socket.to(data).emit("turn", 1);
+  });
+
   socket.on("leave", (data) => {
     socket.leave(data);
     if (data != "findListRooms") {
