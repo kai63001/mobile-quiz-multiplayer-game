@@ -28,7 +28,7 @@ class MyGame extends StatefulWidget {
   final IO.Socket socket;
   final String code;
   final String username;
-  final List player;
+  final List<dynamic> player;
 
   @override
   _MyGameState createState() => _MyGameState();
@@ -40,13 +40,22 @@ class _MyGameState extends State<MyGame> {
   List listPlayer = [];
   List playerPosition = [];
   late String codeRoom;
+  late int iAmAt;
 
   void initGame() async {
     widget.socket.emit("join", codeRoom);
     widget.socket.on("join", (data) {
-    // 
+      //
+    });
+    setState(() {
+      playerPosition = [];
     });
     for (var i = 0; i < widget.player.length; i++) {
+      if (widget.username == widget.player[i]["username"]) {
+        setState(() {
+          iAmAt = i;
+        });
+      }
       setState(() {
         playerPosition = [
           ...playerPosition,
@@ -54,6 +63,8 @@ class _MyGameState extends State<MyGame> {
         ];
       });
     }
+    print("playerPosition : $playerPosition");
+    print("iAmAt : $iAmAt");
   }
 
   void reGame() {
