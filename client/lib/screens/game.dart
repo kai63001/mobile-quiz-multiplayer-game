@@ -43,6 +43,10 @@ class _MyGameState extends State<MyGame> {
   late int iAmAt;
 
   void initGame() async {
+    int lengthOfPlayer = widget.player.length;
+    double positionY = MediaQuery.of(context).size.width * 0.5 +
+        (lengthOfPlayer *
+            32); // defalut position and calculate with player length
     widget.socket.emit("join", codeRoom);
     widget.socket.on("join", (data) {
       //
@@ -50,21 +54,25 @@ class _MyGameState extends State<MyGame> {
     setState(() {
       playerPosition = [];
     });
-    for (var i = 0; i < widget.player.length; i++) {
-      if (widget.username == widget.player[i]["username"]) {
-        setState(() {
-          iAmAt = i;
-        });
-      }
+
+    for (var i = 0; i < lengthOfPlayer; i++) {
+      // check where is my index
+      // if (widget.username == widget.player[i]["username"]) {
+      //   setState(() {
+      //     iAmAt = i;
+      //   });
+      // }
+
       setState(() {
+        positionY -= 60;
         playerPosition = [
           ...playerPosition,
-          {i: "romeo"}
+          {"positionY": positionY}
         ];
       });
     }
     print("playerPosition : $playerPosition");
-    print("iAmAt : $iAmAt");
+    // print("iAmAt : $iAmAt");
   }
 
   void reGame() {
@@ -78,10 +86,15 @@ class _MyGameState extends State<MyGame> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     setState(() {
       codeRoom = "started_${widget.code}";
     });
-    initGame();
+    this.initGame();
   }
 
   @override
@@ -157,17 +170,45 @@ class _MyGameState extends State<MyGame> {
                     )
                 ],
               ),
-              AnimatedPositioned(
-                  top: 50 + (145 * 2),
-                  left: size.width * 0.5 - 55,
-                  duration: const Duration(milliseconds: 300),
-                  child: Center(
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      color: Colors.red,
-                    ),
-                  )),
+              playerPosition.length > 0
+                  ? AnimatedPositioned(
+                      top: 50 + (145 * 2),
+                      left: playerPosition[0]["positionY"],
+                      duration: const Duration(milliseconds: 300),
+                      child: Center(
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          color: Colors.red,
+                        ),
+                      ))
+                  : Text(""),
+              playerPosition.length > 1
+                  ? AnimatedPositioned(
+                      top: 50 + (145 * 3),
+                      left: playerPosition[1]["positionY"],
+                      duration: const Duration(milliseconds: 300),
+                      child: Center(
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          color: Colors.green,
+                        ),
+                      ))
+                  : Text(""),
+              playerPosition.length > 2
+                  ? AnimatedPositioned(
+                      top: 50 + (145 * 2),
+                      left: playerPosition[2]["positionY"],
+                      duration: const Duration(milliseconds: 300),
+                      child: Center(
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          color: Colors.blue,
+                        ),
+                      ))
+                  : Text(""),
             ],
           ),
         ),
