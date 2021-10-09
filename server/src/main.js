@@ -12,15 +12,11 @@ const { promisify } = require("es6-promisify");
 const asyncGet = promisify(redisClient.HGET).bind(redisClient);
 
 //database
-const mongodb = require("./db/mongo")
-
+const mongodb = require("./db/mongo");
 mongodb;
+const quiz = require("./modules/quiz");
 
 let users = {};
-
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
-});
 
 function getActiveRooms(io) {
   const arr = Array.from(io.sockets.adapter.rooms);
@@ -69,7 +65,7 @@ io.on("connection", (socket) => {
       console.log(getUsernameFormId(io, data));
       getUsernameFormId(io, data).then((res) => {
         try {
-          res.length != 0 ? res[0].host = true:null;
+          res.length != 0 ? (res[0].host = true) : null;
           socket.emit("join", res);
           socket.to(data).emit("join", res);
         } catch (error) {
@@ -84,7 +80,7 @@ io.on("connection", (socket) => {
     console.log("startGame");
     getUsernameFormId(io, data).then((res) => {
       try {
-        res.length != 0 ? res[0].host = true:null;
+        res.length != 0 ? (res[0].host = true) : null;
         socket.emit("startGame", res);
         socket.to(data).emit("startGame", res);
       } catch (error) {
@@ -110,12 +106,19 @@ io.on("connection", (socket) => {
     socket.to(data.room).emit("playerPosition", data);
   });
 
+  //quizInGame
+  socket.on("quiz", async (data) => {
+    const res = await quiz.aggregate([{ $sample: { size: 1 } }]);
+    socket.emit("quiz", res);
+    socket.to(data.room).emit("quiz", res);
+  });
+
   socket.on("leave", (data) => {
     socket.leave(data);
     if (data != "findListRooms") {
       getUsernameFormId(io, data).then((res) => {
         try {
-          res.length != 0 ? res[0].host = true:null;
+          res.length != 0 ? (res[0].host = true) : null;
           socket.to(data).emit("join", res);
         } catch (error) {
           console.log(error);

@@ -302,6 +302,7 @@ class _MyGameState extends State<MyGame> {
                           child: GestureDetector(
                             onTap: () {
                               Navigator.pop(context);
+                              this._showQuiz();
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -380,21 +381,48 @@ class _MyGameState extends State<MyGame> {
         });
   }
 
+  void _showQuiz() {
+    Map<String,dynamic> quiz;
+    Map<String,dynamic> dataSend = {"room":codeRoom,"iAmAt":iAmAt};
+    widget.socket.emit("quiz",dataSend);
+    widget.socket.on("quiz", (data){
+      print(data);
+    });
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Scaffold(
+            backgroundColor: Theme.of(context).primaryColor,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                 
+                  Center(
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("romsseo")),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   void _iCantAnswer() {
     setState(() {
       playerPosition[iAmAt]["positionY"] = failPositionY;
     });
-    // if (nowTurn < playerPosition.length - 1) {
-    //   print("linke 241");
-    //   setState(() {
-    //     nowTurn += 1;
-    //   });
-    // } else {
-    //   print("linke 246");
-    //   setState(() {
-    //     nowTurn = 0;
-    //   });
-    // }
+    this._nextTurn();
     Map<dynamic, Object> data = {
       "playerPosition": playerPosition,
       "nowTurn": nowTurn,
@@ -412,6 +440,20 @@ class _MyGameState extends State<MyGame> {
           "${playerPosition[nowTurn]['username'].toString().toUpperCase()} TURN";
     }
     return text;
+  }
+
+  void _nextTurn() {
+    if (nowTurn < playerPosition.length - 1) {
+      print("linke 241");
+      setState(() {
+        nowTurn += 1;
+      });
+    } else {
+      print("linke 246");
+      setState(() {
+        nowTurn = 0;
+      });
+    }
   }
 
   void _checkSocketPositon() {
