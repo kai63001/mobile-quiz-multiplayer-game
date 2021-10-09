@@ -4,19 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class StreamSocket {
-  final _socketResponse = StreamController();
-
-  void Function(List<dynamic>) get addResponse => _socketResponse.sink.add;
-
-  Stream get getResponse => _socketResponse.stream;
-
-  void dispose() {
-    print("close _socketResponse");
-    _socketResponse.close();
-  }
-}
-
 class MyGame extends StatefulWidget {
   const MyGame(
       {Key? key,
@@ -36,9 +23,7 @@ class MyGame extends StatefulWidget {
 }
 
 class _MyGameState extends State<MyGame> {
-  StreamSocket streamSocket = StreamSocket();
-  var list = new List<int>.generate(10, (i) => i + 1);
-  List listPlayer = [];
+  var list = new List<int>.generate(20, (i) => i + 1);
   List playerPosition = [];
   List colorPlayerIndex = ["pink", "green", "blue"];
   late String codeRoom;
@@ -175,7 +160,6 @@ class _MyGameState extends State<MyGame> {
 
   void showDice(BuildContext context, int nume) async {
     late BuildContext dialogContext;
-
     showDialog(
         context: context,
         builder: (context) {
@@ -232,29 +216,151 @@ class _MyGameState extends State<MyGame> {
     this._changePosition(nume);
   }
 
-  void _changePosition(int rn) {
+  void _changePosition(int rn) async {
     int positionY = 145 * rn;
     setState(() {
       playerPosition[iAmAt]["positionY"] += positionY;
     });
-    if (nowTurn < playerPosition.length - 1) {
-      print("linke 241");
-      setState(() {
-        nowTurn += 1;
-      });
-    } else {
-      print("linke 246");
-      setState(() {
-        nowTurn = 0;
-      });
-    }
+    // if (nowTurn < playerPosition.length - 1) {
+    //   print("linke 241");
+    //   setState(() {
+    //     nowTurn += 1;
+    //   });
+    // } else {
+    //   print("linke 246");
+    //   setState(() {
+    //     nowTurn = 0;
+    //   });
+    // }
     Map<dynamic, Object> data = {
       "playerPosition": playerPosition,
       "nowTurn": nowTurn,
       "room": codeRoom
     };
     widget.socket.emit("playerPosition", data);
-    print(data);
+    // next show quiz
+    await Future.delayed(Duration(seconds: 2));
+    this._showTypeOfQuiz();
+  }
+
+  void _showTypeOfQuiz() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Scaffold(
+            backgroundColor: Theme.of(context).primaryColor,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: Text(
+                      'QUESTION TYPE : COMPUTER',
+                      style: GoogleFonts.fredokaOne(
+                        textStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            letterSpacing: .5),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: Text(
+                      'Would you like to answer this question?',
+                      style: GoogleFonts.fredokaOne(
+                        textStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            letterSpacing: .5),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  color: Colors.white),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  'YES',
+                                  style: GoogleFonts.fredokaOne(
+                                    textStyle: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        letterSpacing: .5),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 50,
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                border: Border.all(color: Colors.white, width: 2),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  'NO',
+                                  style: GoogleFonts.fredokaOne(
+                                    textStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        letterSpacing: .5),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Center(
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("romsseo")),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   String _checkTurnStatus() {
@@ -269,17 +375,16 @@ class _MyGameState extends State<MyGame> {
   }
 
   void _checkSocketPositon() {
-    Map<dynamic, dynamic> dataSocket = {};
     widget.socket.on("playerPosition", (data) {
       print(data);
       if (mounted == true) {
+        if (data["nowTurn"] == iAmAt && data["nowTurn"] != nowTurn) {
+          this._startGame();
+        }
         setState(() {
           playerPosition = data["playerPosition"];
           nowTurn = data["nowTurn"];
         });
-        if (nowTurn == iAmAt) {
-          this._startGame();
-        }
       }
     });
   }
