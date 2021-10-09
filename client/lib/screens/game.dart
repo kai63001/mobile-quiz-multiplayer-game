@@ -253,6 +253,143 @@ class _MyGameState extends State<MyGame> {
   }
 
   void _showTypeOfQuiz() {
+    Map<String, dynamic> dataSend = {"room": codeRoom, "iAmAt": iAmAt};
+    widget.socket.emit("quiz", dataSend);
+    bool dialogShow = false;
+    widget.socket.on("quiz", (data) {
+      if (mounted == true && dialogShow == false) {
+        dialogShow = true;
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Scaffold(
+                backgroundColor: Theme.of(context).primaryColor,
+                body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Text(
+                          'QUESTION TYPE : ${data[0]["type"]}',
+                          style: GoogleFonts.fredokaOne(
+                            textStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30,
+                                letterSpacing: .5),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Text(
+                          'Would you like to answer this question?',
+                          style: GoogleFonts.fredokaOne(
+                            textStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                letterSpacing: .5),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  this._showQuiz(data[0]);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      color: Colors.white),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text(
+                                      'YES',
+                                      style: GoogleFonts.fredokaOne(
+                                        textStyle: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            letterSpacing: .5),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 50,
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  this._iCantAnswer();
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                    border: Border.all(
+                                        color: Colors.white, width: 2),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text(
+                                      'NO',
+                                      style: GoogleFonts.fredokaOne(
+                                        textStyle: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            letterSpacing: .5),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Center(
+                        child: Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          child: GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("romsseo")),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            });
+      }
+    });
+  }
+
+  void _showQuiz(data) async {
     showDialog(
         context: context,
         builder: (context) {
@@ -262,142 +399,15 @@ class _MyGameState extends State<MyGame> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: Text(
-                      'QUESTION TYPE : COMPUTER',
-                      style: GoogleFonts.fredokaOne(
-                        textStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                            letterSpacing: .5),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: Text(
-                      'Would you like to answer this question?',
-                      style: GoogleFonts.fredokaOne(
-                        textStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            letterSpacing: .5),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                              this._showQuiz();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3),
-                                  color: Colors.white),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Text(
-                                  'YES',
-                                  style: GoogleFonts.fredokaOne(
-                                    textStyle: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                        letterSpacing: .5),
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 50,
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                              this._iCantAnswer();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                                border:
-                                    Border.all(color: Colors.white, width: 2),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Text(
-                                  'NO',
-                                  style: GoogleFonts.fredokaOne(
-                                    textStyle: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        letterSpacing: .5),
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
                   Center(
                     child: Container(
                       height: 50,
                       decoration: BoxDecoration(
                         color: Colors.white,
                       ),
-                      child: GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text("romsseo")),
+                      child: Text("asdasd"),
                     ),
                   ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
-  void _showQuiz() {
-    Map<String,dynamic> quiz;
-    Map<String,dynamic> dataSend = {"room":codeRoom,"iAmAt":iAmAt};
-    widget.socket.emit("quiz",dataSend);
-    widget.socket.on("quiz", (data){
-      print(data);
-    });
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Scaffold(
-            backgroundColor: Theme.of(context).primaryColor,
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                 
                   Center(
                     child: Container(
                       height: 50,
