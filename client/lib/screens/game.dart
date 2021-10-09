@@ -40,7 +40,7 @@ class _MyGameState extends State<MyGame> {
   var list = new List<int>.generate(10, (i) => i + 1);
   List listPlayer = [];
   List playerPosition = [];
-  List<Color> colorPlayerIndex = [Colors.pink, Colors.green, Colors.blue];
+  List colorPlayerIndex = ["pink", "green", "blue"];
   late String codeRoom;
   late int iAmAt; //player index
   int nowTurn = 0; //turn of player index
@@ -94,6 +94,7 @@ class _MyGameState extends State<MyGame> {
     setState(() {
       playerPosition = [];
       gameStarted = false;
+      nowTurn = 0;
     });
   }
 
@@ -236,6 +237,24 @@ class _MyGameState extends State<MyGame> {
     setState(() {
       playerPosition[iAmAt]["positionY"] += positionY;
     });
+    if (nowTurn < playerPosition.length - 1) {
+      print("linke 241");
+      setState(() {
+        nowTurn += 1;
+      });
+    } else {
+      print("linke 246");
+      setState(() {
+        nowTurn = 0;
+      });
+    }
+    Map<dynamic, Object> data = {
+      "playerPosition": playerPosition,
+      "nowTurn": nowTurn,
+      "room": codeRoom
+    };
+    widget.socket.emit("playerPosition", data);
+    print(data);
   }
 
   String _checkTurnStatus() {
@@ -247,6 +266,22 @@ class _MyGameState extends State<MyGame> {
           "${playerPosition[nowTurn]['username'].toString().toUpperCase()} TURN";
     }
     return text;
+  }
+
+  void _checkSocketPositon() {
+    Map<dynamic, dynamic> dataSocket = {};
+    widget.socket.on("playerPosition", (data) {
+      print(data);
+      if (mounted == true) {
+        setState(() {
+          playerPosition = data["playerPosition"];
+          nowTurn = data["nowTurn"];
+        });
+        if (nowTurn == iAmAt) {
+          this._startGame();
+        }
+      }
+    });
   }
 
   @override
@@ -261,6 +296,18 @@ class _MyGameState extends State<MyGame> {
       codeRoom = "started_${widget.code}";
     });
     this.initGame();
+    this._checkSocketPositon();
+  }
+
+  Color returnColor(String stringColor) {
+    Color color = Colors.pink;
+    if (stringColor == "green") {
+      color = Colors.green;
+    }
+    if (stringColor == "blue") {
+      color = Colors.blue;
+    }
+    return color;
   }
 
   @override
@@ -353,13 +400,14 @@ class _MyGameState extends State<MyGame> {
                   AnimatedPositioned(
                       top: double.parse(
                           playerPosition[i]["positionY"].toString()),
-                      left: double.parse(playerPosition[i]["positionX"].toString()),
+                      left: double.parse(
+                          playerPosition[i]["positionX"].toString()),
                       duration: const Duration(milliseconds: 300),
                       child: Center(
                         child: Container(
                           width: 50,
                           height: 50,
-                          color: playerPosition[i]["color"],
+                          color: returnColor(playerPosition[i]["color"]),
                         ),
                       )),
               ],

@@ -99,9 +99,10 @@ io.on("connection", (socket) => {
   });
 
   // inGame
-  socket.on("turn", (data) => {
-    socket.emit("turn", 1);
-    socket.to(data).emit("turn", 1);
+  socket.on("playerPosition", (data) => {
+    console.log(data);
+    socket.emit("playerPosition", data);
+    socket.to(data.room).emit("playerPosition", data);
   });
 
   socket.on("leave", (data) => {
