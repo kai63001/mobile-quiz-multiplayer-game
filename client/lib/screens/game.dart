@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -44,11 +45,13 @@ class _MyGameState extends State<MyGame> {
   late int iAmAt; //player index
   int nowTurn = 0; //turn of player index
 
+  Random rnd = new Random();
+
   bool gameStarted = false;
 
   void initGame() async {
     int lengthOfPlayer = widget.player.length;
-    double positionY = MediaQuery.of(context).size.width * 0.5 +
+    double positionX = MediaQuery.of(context).size.width * 0.5 +
         (lengthOfPlayer *
             32); // defalut position and calculate with player length
     widget.socket.emit("join", codeRoom);
@@ -68,13 +71,13 @@ class _MyGameState extends State<MyGame> {
       }
 
       setState(() {
-        positionY -= 60;
+        positionX -= 60;
         playerPosition = [
           ...playerPosition,
           {
             "username": widget.player[i]["username"],
-            "positionY": positionY,
-            "positionX": 50 + 145,
+            "positionX": positionX,
+            "positionY": 50 + 145,
             "color": colorPlayerIndex[i]
           }
         ];
@@ -98,7 +101,7 @@ class _MyGameState extends State<MyGame> {
     setState(() {
       gameStarted = true;
     });
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 2));
     if (nowTurn == iAmAt) {
       print("your turn");
 
@@ -131,11 +134,20 @@ class _MyGameState extends State<MyGame> {
                     SizedBox(
                       height: 30,
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.6,
-                      child: Image.asset(
-                        'assets/images/dice.png',
-                        color: Colors.white,
+                    GestureDetector(
+                      onTap: () {
+                        int r = 1 + rnd.nextInt(7 - 1);
+                        print(r);
+                        Navigator.pop(context);
+                        Future.delayed(
+                            Duration.zero, () => showDice(context, r));
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        child: Image.asset(
+                          'assets/images/dice.png',
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -158,6 +170,72 @@ class _MyGameState extends State<MyGame> {
                 ),
               ),
             ));
+  }
+
+  void showDice(BuildContext context, int nume) async {
+    late BuildContext dialogContext;
+
+    showDialog(
+        context: context,
+        builder: (context) {
+          dialogContext = context;
+          return Scaffold(
+            backgroundColor: Theme.of(context).primaryColor,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Image.asset(
+                      'assets/images/$nume.png',
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: Text(
+                      '$nume',
+                      style: GoogleFonts.fredokaOne(
+                        textStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 50,
+                            letterSpacing: .5),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Center(
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("romsseo")),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+    await Future.delayed(Duration(seconds: 2));
+    Navigator.pop(dialogContext);
+    this._changePosition(nume);
+  }
+
+  void _changePosition(int rn) {
+    int positionY = 145 * rn;
+    setState(() {
+      playerPosition[iAmAt]["positionY"] = positionY;
+    });
   }
 
   String _checkTurnStatus() {
@@ -274,8 +352,8 @@ class _MyGameState extends State<MyGame> {
                 for (int i = 0; i < playerPosition.length; i++)
                   AnimatedPositioned(
                       top: double.parse(
-                          playerPosition[i]["positionX"].toString()),
-                      left: playerPosition[i]["positionY"],
+                          playerPosition[i]["positionY"].toString()),
+                      left: double.parse(playerPosition[i]["positionX"].toString()),
                       duration: const Duration(milliseconds: 300),
                       child: Center(
                         child: Container(
