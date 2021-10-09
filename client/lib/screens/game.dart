@@ -234,7 +234,7 @@ class _MyGameState extends State<MyGame> {
   void _changePosition(int rn) {
     int positionY = 145 * rn;
     setState(() {
-      playerPosition[iAmAt]["positionY"] = positionY;
+      playerPosition[iAmAt]["positionY"] += positionY;
     });
   }
 
