@@ -110,18 +110,54 @@ class _MyGameState extends State<MyGame> {
     showDialog(
         context: context,
         builder: (context) => Scaffold(
-          backgroundColor: Theme.of(context).primaryColor,
-          body: Center(
-            child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  child: GestureDetector(onTap: (){
-                    Navigator.pop(context);
-                  },child: Text("romsseo")),
+              backgroundColor: Theme.of(context).primaryColor,
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Text(
+                        'TAP THE DICE TO RANDOM',
+                        style: GoogleFonts.fredokaOne(
+                          textStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              letterSpacing: .5),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      child: Image.asset(
+                        'assets/images/dice.png',
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Center(
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        child: GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text("romsseo")),
+                      ),
+                    ),
+                  ],
                 ),
-          ),
-        ));
+              ),
+            ));
   }
 
   String _checkTurnStatus() {
