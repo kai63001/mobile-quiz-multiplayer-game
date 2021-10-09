@@ -11,6 +11,11 @@ const redisClient = redis.createClient();
 const { promisify } = require("es6-promisify");
 const asyncGet = promisify(redisClient.HGET).bind(redisClient);
 
+//database
+const mongodb = require("./db/mongo")
+
+mongodb;
+
 let users = {};
 
 app.get("/", (req, res) => {
