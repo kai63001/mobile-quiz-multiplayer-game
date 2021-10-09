@@ -25,6 +25,7 @@ class MyGame extends StatefulWidget {
 class _MyGameState extends State<MyGame> {
   var list = new List<int>.generate(20, (i) => i + 1);
   List playerPosition = [];
+  List playerPositionX = [];
   List colorPlayerIndex = ["pink", "green", "blue"];
   late String codeRoom;
   late int iAmAt; //player index
@@ -33,6 +34,8 @@ class _MyGameState extends State<MyGame> {
   Random rnd = new Random();
 
   bool gameStarted = false;
+
+  double failPositionY = 50 + 145;
 
   void initGame() async {
     int lengthOfPlayer = widget.player.length;
@@ -64,6 +67,12 @@ class _MyGameState extends State<MyGame> {
             "positionX": positionX,
             "positionY": 50 + 145,
             "color": colorPlayerIndex[i]
+          }
+        ];
+        playerPositionX = [
+          ...playerPositionX,
+          {
+            "positionX": positionX,
           }
         ];
       });
@@ -291,6 +300,9 @@ class _MyGameState extends State<MyGame> {
                       children: [
                         Expanded(
                           child: GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
                             child: Container(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(3),
@@ -316,10 +328,15 @@ class _MyGameState extends State<MyGame> {
                         ),
                         Expanded(
                           child: GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                              this._iCantAnswer();
+                            },
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(3),
-                                border: Border.all(color: Colors.white, width: 2),
+                                border:
+                                    Border.all(color: Colors.white, width: 2),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -361,6 +378,29 @@ class _MyGameState extends State<MyGame> {
             ),
           );
         });
+  }
+
+  void _iCantAnswer() {
+    setState(() {
+      playerPosition[iAmAt]["positionY"] = failPositionY;
+    });
+    // if (nowTurn < playerPosition.length - 1) {
+    //   print("linke 241");
+    //   setState(() {
+    //     nowTurn += 1;
+    //   });
+    // } else {
+    //   print("linke 246");
+    //   setState(() {
+    //     nowTurn = 0;
+    //   });
+    // }
+    Map<dynamic, Object> data = {
+      "playerPosition": playerPosition,
+      "nowTurn": nowTurn,
+      "room": codeRoom
+    };
+    widget.socket.emit("playerPosition", data);
   }
 
   String _checkTurnStatus() {
@@ -506,7 +546,7 @@ class _MyGameState extends State<MyGame> {
                       top: double.parse(
                           playerPosition[i]["positionY"].toString()),
                       left: double.parse(
-                          playerPosition[i]["positionX"].toString()),
+                          playerPositionX[i]["positionX"].toString()),
                       duration: const Duration(milliseconds: 300),
                       child: Center(
                         child: Container(
