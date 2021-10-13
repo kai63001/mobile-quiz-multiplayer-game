@@ -87,7 +87,9 @@ class _ListLobbyState extends State<ListLobby> {
                   child: ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
-                      if (snapshot.data[index].toString() != "findListRooms") {
+                      if (snapshot.data[index].toString() != "findListRooms" &&
+                          snapshot.data[index].toString().indexOf("started") <
+                              0) {
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
