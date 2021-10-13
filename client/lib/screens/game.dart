@@ -23,7 +23,7 @@ class MyGame extends StatefulWidget {
 }
 
 class _MyGameState extends State<MyGame> {
-  var list = new List<int>.generate(20, (i) => i + 1);
+  var list = new List<int>.generate(26, (i) => i + 1);
   List playerPosition = [];
   List playerPositionX = [];
   List colorPlayerIndex = ["pink", "green", "blue"];
@@ -90,6 +90,7 @@ class _MyGameState extends State<MyGame> {
       playerPosition = [];
       gameStarted = false;
       nowTurn = 0;
+      failPositionY = 50 + 145;
     });
   }
 
@@ -498,6 +499,10 @@ class _MyGameState extends State<MyGame> {
     setState(() {
       playerPosition[iAmAt]["positionY"] = failPositionY;
     });
+    _controller.animateTo(
+        double.parse(playerPosition[nowTurn]["positionY"].toString()) - 100,
+        duration: Duration(seconds: 2),
+        curve: Curves.fastOutSlowIn);
     this._nextTurn();
     Map<dynamic, Object> data = {
       "playerPosition": playerPosition,
@@ -511,6 +516,10 @@ class _MyGameState extends State<MyGame> {
     setState(() {
       playerPosition[iAmAt]["positionY"] = 50 + 145;
     });
+    _controller.animateTo(
+        double.parse(playerPosition[nowTurn]["positionY"].toString()) - 100,
+        duration: Duration(seconds: 2),
+        curve: Curves.fastOutSlowIn);
     this._nextTurn();
     Map<dynamic, Object> data = {
       "playerPosition": playerPosition,
@@ -694,11 +703,16 @@ class _MyGameState extends State<MyGame> {
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.all(Radius.circular(3))),
-                        child: Text(
-                          "START GAME ${i}",
-                          style: GoogleFonts.fredokaOne(
-                            textStyle: TextStyle(
-                                color: Colors.black, letterSpacing: .5),
+                        child: Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Text(
+                            "${(i - 1) == 0?'START':(i - 1)}",
+                            style: GoogleFonts.fredokaOne(
+                              textStyle: TextStyle(
+                                  fontSize: 60,
+                                  color: Colors.grey[300],
+                                  letterSpacing: .5),
+                            ),
                           ),
                         ),
                       )
