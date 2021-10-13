@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -32,6 +33,10 @@ class _MyGameState extends State<MyGame> {
   int nowTurn = 0; //turn of player index
   ScrollController _controller = new ScrollController();
 
+  // action in game
+  List trap = [3, 7, 12, 23];
+  List item = [5, 9, 16, 22];
+
   // position Y to end is 3820
 
   Random rnd = new Random();
@@ -39,6 +44,8 @@ class _MyGameState extends State<MyGame> {
   bool gameStarted = false;
 
   double failPositionY = 50 + 145;
+
+  void _checkTrap() {}
 
   void initGame() async {
     int lengthOfPlayer = widget.player.length;
@@ -244,8 +251,10 @@ class _MyGameState extends State<MyGame> {
       "room": codeRoom
     };
     widget.socket.emit("playerPosition", data);
-    // next show quiz
     await Future.delayed(Duration(seconds: 2));
+    // checkTrap
+    this._checkTrap();
+    // next show quiz
     this._showTypeOfQuiz();
   }
 
@@ -471,9 +480,9 @@ class _MyGameState extends State<MyGame> {
                               ),
                             ),
                           ),
-                        // SizedBox(
-                        //   height: 40,
-                        // ),
+                        SizedBox(
+                          height: 40,
+                        ),
                         // Center(
                         //   child: Container(
                         //     height: 50,
@@ -750,17 +759,36 @@ class _MyGameState extends State<MyGame> {
                             color: Colors.white,
                             borderRadius: BorderRadius.all(Radius.circular(3))),
                         child: Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: Text(
-                            "${(i - 1) == 0 ? 'START' : (i - 1)}",
-                            style: GoogleFonts.fredokaOne(
-                              textStyle: TextStyle(
-                                  fontSize: 60,
-                                  color: Colors.grey[300],
-                                  letterSpacing: .5),
-                            ),
-                          ),
-                        ),
+                            padding: const EdgeInsets.all(18.0),
+                            child: trap.contains(i)
+                                ? Row(
+                                    children: [
+                                      Icon(
+                                        FontAwesomeIcons.bomb,
+                                        color: Colors.red[300],
+                                        size: 60,
+                                      ),
+                                    ],
+                                  )
+                                : item.contains(i)
+                                    ? Row(
+                                        children: [
+                                          Icon(
+                                            FontAwesomeIcons.boxOpen,
+                                            color: Colors.blue[300],
+                                            size: 60,
+                                          ),
+                                        ],
+                                      )
+                                    : Text(
+                                        "${(i - 1) == 0 ? 'START' : (i - 1)}",
+                                        style: GoogleFonts.fredokaOne(
+                                          textStyle: TextStyle(
+                                              fontSize: 60,
+                                              color: Colors.grey[300],
+                                              letterSpacing: .5),
+                                        ),
+                                      )),
                       )
                   ],
                 ),
