@@ -233,7 +233,7 @@ class _MyGameState extends State<MyGame> {
       playerPosition[iAmAt]["positionY"] += positionY;
     });
     _controller.animateTo(
-        double.parse(playerPosition[nowTurn]["positionY"].toString()) - 100,
+        double.parse(playerPosition[nowTurn]["positionY"].toString()) - 250,
         duration: Duration(seconds: 2),
         curve: Curves.fastOutSlowIn);
     Map<dynamic, Object> data = {
@@ -500,7 +500,7 @@ class _MyGameState extends State<MyGame> {
       playerPosition[iAmAt]["positionY"] = failPositionY;
     });
     _controller.animateTo(
-        double.parse(playerPosition[nowTurn]["positionY"].toString()) - 100,
+        double.parse(playerPosition[nowTurn]["positionY"].toString()) - 250,
         duration: Duration(seconds: 2),
         curve: Curves.fastOutSlowIn);
     this._nextTurn();
@@ -517,7 +517,7 @@ class _MyGameState extends State<MyGame> {
       playerPosition[iAmAt]["positionY"] = 50 + 145;
     });
     _controller.animateTo(
-        double.parse(playerPosition[nowTurn]["positionY"].toString()) - 100,
+        double.parse(playerPosition[nowTurn]["positionY"].toString()) - 250,
         duration: Duration(seconds: 2),
         curve: Curves.fastOutSlowIn);
     this._nextTurn();
@@ -724,7 +724,7 @@ class _MyGameState extends State<MyGame> {
                           playerPosition[i]["positionY"].toString()),
                       left: double.parse(
                           playerPositionX[i]["positionX"].toString()),
-                      duration: const Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 1000),
                       child: Center(
                         child: Container(
                           width: 50,
