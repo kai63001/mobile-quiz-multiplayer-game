@@ -30,6 +30,7 @@ class _MyGameState extends State<MyGame> {
   late String codeRoom;
   late int iAmAt; //player index
   int nowTurn = 0; //turn of player index
+  ScrollController _controller = new ScrollController();
 
   Random rnd = new Random();
 
@@ -230,6 +231,10 @@ class _MyGameState extends State<MyGame> {
     setState(() {
       playerPosition[iAmAt]["positionY"] += positionY;
     });
+    _controller.animateTo(
+        double.parse(playerPosition[nowTurn]["positionY"].toString()) - 100,
+        duration: Duration(seconds: 2),
+        curve: Curves.fastOutSlowIn);
     Map<dynamic, Object> data = {
       "playerPosition": playerPosition,
       "nowTurn": nowTurn,
@@ -526,14 +531,16 @@ class _MyGameState extends State<MyGame> {
             content: Container(
                 height: 200,
                 width: 200,
-                decoration: BoxDecoration(
-                  color: Colors.transparent
-                ),
+                decoration: BoxDecoration(color: Colors.transparent),
                 child: Image.asset("assets/images/win.gif")),
           );
         });
     await Future.delayed(Duration(seconds: 2));
     Navigator.pop(dialogContext);
+    setState(() {
+      failPositionY =
+          double.parse(playerPosition[iAmAt]["positionY"].toString());
+    });
     this._nextTurn();
     print(playerPosition);
     Map<dynamic, Object> data = {
@@ -557,12 +564,12 @@ class _MyGameState extends State<MyGame> {
 
   void _nextTurn() {
     if (nowTurn < playerPosition.length - 1) {
-      print("linke 241");
+      // print("linke 241");
       setState(() {
         nowTurn += 1;
       });
     } else {
-      print("linke 246");
+      // print("linke 246");
       setState(() {
         nowTurn = 0;
       });
@@ -599,15 +606,15 @@ class _MyGameState extends State<MyGame> {
     this._checkSocketPositon();
   }
 
-  Color returnColor(String stringColor) {
-    Color color = Colors.pink;
+  String returnColor(String stringColor) {
+    String image = "assets/images/player1.gif";
     if (stringColor == "green") {
-      color = Colors.green;
+      image = "assets/images/player2.gif";
     }
     if (stringColor == "blue") {
-      color = Colors.blue;
+      image = "assets/images/player1.gif";
     }
-    return color;
+    return image;
   }
 
   @override
@@ -640,6 +647,7 @@ class _MyGameState extends State<MyGame> {
         ),
         body: Center(
           child: SingleChildScrollView(
+            controller: _controller,
             child: Stack(
               children: [
                 Column(
@@ -707,7 +715,9 @@ class _MyGameState extends State<MyGame> {
                         child: Container(
                           width: 50,
                           height: 50,
-                          color: returnColor(playerPosition[i]["color"]),
+                          // color: Colors.black,
+                          child: Image.asset(
+                              returnColor(playerPosition[i]["color"])),
                         ),
                       )),
               ],
