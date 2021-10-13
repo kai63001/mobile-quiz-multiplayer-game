@@ -65,7 +65,7 @@ class _MyGameState extends State<MyGame> {
           {
             "username": widget.player[i]["username"],
             "positionX": positionX,
-            "positionY": 50 + 145,
+            "positionY": 50.00 + 145.00,
             "color": colorPlayerIndex[i]
           }
         ];
@@ -230,17 +230,6 @@ class _MyGameState extends State<MyGame> {
     setState(() {
       playerPosition[iAmAt]["positionY"] += positionY;
     });
-    // if (nowTurn < playerPosition.length - 1) {
-    //   print("linke 241");
-    //   setState(() {
-    //     nowTurn += 1;
-    //   });
-    // } else {
-    //   print("linke 246");
-    //   setState(() {
-    //     nowTurn = 0;
-    //   });
-    // }
     Map<dynamic, Object> data = {
       "playerPosition": playerPosition,
       "nowTurn": nowTurn,
@@ -394,71 +383,108 @@ class _MyGameState extends State<MyGame> {
     showDialog(
         context: context,
         builder: (context) {
+          int choiced = -1;
           return Scaffold(
             backgroundColor: Theme.of(context).primaryColor,
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      Center(
-                        child: Container(
-                          child: Text(
-                            "${data['quiz']}",
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.fredokaOne(
-                              textStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 25,
-                                  letterSpacing: .5),
-                            ),
-                          ),
+            body: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 40,
                         ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      for (int i = 0; i < data["choice"].length; i++)
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 10.0),
-                          width: MediaQuery.of(context).size.width * 0.8,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: Colors.white),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
+                        Center(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.8,
                             child: Text(
-                              "${data["choice"][i]}",
+                              "${data['quiz']}",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.fredokaOne(
                                 textStyle: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 20,
+                                    color: Colors.white,
+                                    fontSize: 25,
                                     letterSpacing: .5),
                               ),
                             ),
                           ),
                         ),
-                      Center(
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        for (int i = 0; i < data["choice"].length; i++)
+                          GestureDetector(
+                            onTap: () async {
+                              if (choiced == -1) {
+                                setState(() {
+                                  choiced = i;
+                                });
+                                await Future.delayed(Duration(seconds: 1));
+                                if (choiced == data["answer"]) {
+                                  print("ture");
+                                  Navigator.pop(context);
+                                  this._trueAnswer();
+                                } else {
+                                  print("false");
+                                  Navigator.pop(context);
+                                  this._wrongAnswer();
+                                }
+                                print(choiced);
+                              }
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 10.0),
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: choiced == i
+                                      ? choiced == data["answer"]
+                                          ? Colors.green
+                                          : choiced != data["answer"]
+                                              ? Colors.red
+                                              : Colors.white
+                                      : Colors.white),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  "${data["choice"][i]}",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.fredokaOne(
+                                    textStyle: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 20,
+                                        letterSpacing: .5),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                          child: GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text("romsseo")),
+                        SizedBox(
+                          height: 40,
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+                        Center(
+                          child: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                            ),
+                            child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text("romsseo")),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }),
           );
         });
   }
@@ -468,6 +494,48 @@ class _MyGameState extends State<MyGame> {
       playerPosition[iAmAt]["positionY"] = failPositionY;
     });
     this._nextTurn();
+    Map<dynamic, Object> data = {
+      "playerPosition": playerPosition,
+      "nowTurn": nowTurn,
+      "room": codeRoom
+    };
+    widget.socket.emit("playerPosition", data);
+  }
+
+  void _wrongAnswer() {
+    setState(() {
+      playerPosition[iAmAt]["positionY"] = 50 + 145;
+    });
+    this._nextTurn();
+    Map<dynamic, Object> data = {
+      "playerPosition": playerPosition,
+      "nowTurn": nowTurn,
+      "room": codeRoom
+    };
+    widget.socket.emit("playerPosition", data);
+  }
+
+  void _trueAnswer() async {
+    late BuildContext dialogContext;
+    showDialog(
+        context: context,
+        builder: (context) {
+          dialogContext = context;
+          return AlertDialog(
+            backgroundColor: Colors.transparent,
+            content: Container(
+                height: 200,
+                width: 200,
+                decoration: BoxDecoration(
+                  color: Colors.transparent
+                ),
+                child: Image.asset("assets/images/win.gif")),
+          );
+        });
+    await Future.delayed(Duration(seconds: 2));
+    Navigator.pop(dialogContext);
+    this._nextTurn();
+    print(playerPosition);
     Map<dynamic, Object> data = {
       "playerPosition": playerPosition,
       "nowTurn": nowTurn,
