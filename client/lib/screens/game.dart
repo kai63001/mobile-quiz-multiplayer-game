@@ -32,6 +32,8 @@ class _MyGameState extends State<MyGame> {
   int nowTurn = 0; //turn of player index
   ScrollController _controller = new ScrollController();
 
+  // position Y to end is 3820
+
   Random rnd = new Random();
 
   bool gameStarted = false;
@@ -204,19 +206,19 @@ class _MyGameState extends State<MyGame> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Center(
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                      ),
-                      child: GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text("romsseo")),
-                    ),
-                  ),
+                  // Center(
+                  //   child: Container(
+                  //     height: 50,
+                  //     decoration: BoxDecoration(
+                  //       color: Colors.white,
+                  //     ),
+                  //     child: GestureDetector(
+                  //         onTap: () {
+                  //           Navigator.pop(context);
+                  //         },
+                  //         child: Text("romsseo")),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -359,22 +361,22 @@ class _MyGameState extends State<MyGame> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Center(
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                          ),
-                          child: GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text("romsseo")),
-                        ),
-                      ),
+                      // SizedBox(
+                      //   height: 30,
+                      // ),
+                      // Center(
+                      //   child: Container(
+                      //     height: 50,
+                      //     decoration: BoxDecoration(
+                      //       color: Colors.white,
+                      //     ),
+                      //     child: GestureDetector(
+                      //         onTap: () {
+                      //           Navigator.pop(context);
+                      //         },
+                      //         child: Text("romsseo")),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -469,22 +471,22 @@ class _MyGameState extends State<MyGame> {
                               ),
                             ),
                           ),
-                        SizedBox(
-                          height: 40,
-                        ),
-                        Center(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                            ),
-                            child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text("romsseo")),
-                          ),
-                        ),
+                        // SizedBox(
+                        //   height: 40,
+                        // ),
+                        // Center(
+                        //   child: Container(
+                        //     height: 50,
+                        //     decoration: BoxDecoration(
+                        //       color: Colors.white,
+                        //     ),
+                        //     child: GestureDetector(
+                        //         onTap: () {
+                        //           Navigator.pop(context);
+                        //         },
+                        //         child: Text("romsseo")),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ],
@@ -550,6 +552,9 @@ class _MyGameState extends State<MyGame> {
       failPositionY =
           double.parse(playerPosition[iAmAt]["positionY"].toString());
     });
+    if (this._checkWin()) {
+      return;
+    }
     this._nextTurn();
     print(playerPosition);
     Map<dynamic, Object> data = {
@@ -558,6 +563,32 @@ class _MyGameState extends State<MyGame> {
       "room": codeRoom
     };
     widget.socket.emit("playerPosition", data);
+  }
+
+  bool _checkWin() {
+    bool check = false;
+    if (playerPosition[iAmAt]["positionY"] >= 3820) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.transparent,
+              content: Container(
+                decoration: BoxDecoration(color: Colors.white),
+                child: Text(
+                  "YOU ARE WINNER",
+                  style: GoogleFonts.fredokaOne(
+                    textStyle: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        letterSpacing: .5),
+                  ),
+                ),
+              ),
+            );
+          });
+      check = true;
+    }
+    return check;
   }
 
   String _checkTurnStatus() {
@@ -635,6 +666,15 @@ class _MyGameState extends State<MyGame> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           elevation: 0,
+          leading: GestureDetector(
+            onTap: () {
+              this.reGame();
+            },
+            child: Icon(
+              Icons.refresh,
+              size: 26.0,
+            ),
+          ),
           title: Text(
             "${_checkTurnStatus().toString()}",
             style: GoogleFonts.fredokaOne(
@@ -647,7 +687,7 @@ class _MyGameState extends State<MyGame> {
                 child: GestureDetector(
                   onTap: () {},
                   child: Icon(
-                    Icons.search,
+                    Icons.backpack,
                     size: 26.0,
                   ),
                 )),
@@ -665,33 +705,39 @@ class _MyGameState extends State<MyGame> {
                       child: Container(
                         width: size.width * 0.8,
                         margin: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(3))),
                         height: 130,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  initGame();
-                                },
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.green),
-                                  child: Text("new"),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(),
+                                      child: Text(
+                                        "YOU ARE",
+                                        style: GoogleFonts.fredokaOne(
+                                          textStyle: TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.grey[300],
+                                              letterSpacing: .5),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 50,
+                                      child: Image.asset(returnColor(
+                                          playerPosition[iAmAt]["color"])),
+                                    )
+                                  ],
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  reGame();
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(color: Colors.red),
-                                  child: Text("re"),
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -706,7 +752,7 @@ class _MyGameState extends State<MyGame> {
                         child: Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: Text(
-                            "${(i - 1) == 0?'START':(i - 1)}",
+                            "${(i - 1) == 0 ? 'START' : (i - 1)}",
                             style: GoogleFonts.fredokaOne(
                               textStyle: TextStyle(
                                   fontSize: 60,
@@ -721,7 +767,8 @@ class _MyGameState extends State<MyGame> {
                 for (int i = 0; i < playerPosition.length; i++)
                   AnimatedPositioned(
                       top: double.parse(
-                          playerPosition[i]["positionY"].toString()),
+                              playerPosition[i]["positionY"].toString())
+                          .clamp(50 + 145, 3820),
                       left: double.parse(
                           playerPositionX[i]["positionX"].toString()),
                       duration: const Duration(milliseconds: 1000),
