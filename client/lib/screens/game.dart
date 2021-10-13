@@ -390,6 +390,7 @@ class _MyGameState extends State<MyGame> {
   }
 
   void _showQuiz(data) async {
+    print(data);
     showDialog(
         context: context,
         builder: (context) {
@@ -397,29 +398,63 @@ class _MyGameState extends State<MyGame> {
             backgroundColor: Theme.of(context).primaryColor,
             body: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Center(
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
+                  Column(
+                    children: [
+                      Center(
+                        child: Container(
+                          child: Text(
+                            "${data['quiz']}",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.fredokaOne(
+                              textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                  letterSpacing: .5),
+                            ),
+                          ),
+                        ),
                       ),
-                      child: Text("asdasd"),
-                    ),
+                    ],
                   ),
-                  Center(
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
+                  Column(
+                    children: [
+                      for (int i = 0; i < data["choice"].length; i++)
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 10.0),
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: Colors.white),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              "${data["choice"][i]}",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.fredokaOne(
+                                textStyle: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 20,
+                                    letterSpacing: .5),
+                              ),
+                            ),
+                          ),
+                        ),
+                      Center(
+                        child: Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          child: GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("romsseo")),
+                        ),
                       ),
-                      child: GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text("romsseo")),
-                    ),
+                    ],
                   ),
                 ],
               ),
