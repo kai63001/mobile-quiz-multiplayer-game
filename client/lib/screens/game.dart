@@ -156,22 +156,22 @@ class _MyGameState extends State<MyGame> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Center(
-                      child: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                        ),
-                        child: GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text("romsseo")),
-                      ),
-                    ),
+                    // SizedBox(
+                    //   height: 30,
+                    // ),
+                    // Center(
+                    //   child: Container(
+                    //     height: 50,
+                    //     decoration: BoxDecoration(
+                    //       color: Colors.white,
+                    //     ),
+                    //     child: GestureDetector(
+                    //         onTap: () {
+                    //           Navigator.pop(context);
+                    //         },
+                    //         child: Text("romsseo")),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
